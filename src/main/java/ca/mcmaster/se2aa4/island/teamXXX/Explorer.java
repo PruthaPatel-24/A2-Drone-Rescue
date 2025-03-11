@@ -35,11 +35,10 @@ public class Explorer implements IExplorerRaid {
         JSONObject decision = new JSONObject();
         JSONObject parameters = new JSONObject();
         if (!exploredEast && range == -1) {
-            decision.put("action", "echo");
-            parameters.put("direction", "E");  // Start by exploring East
+            decision.put("action", "scan");
+            //parameters.put("direction", "E");  // Start by exploring East
         } 
         else if (!exploredEast) {
-            // Only set x = range *after* range is known
             x = range;
             exploredEast = true;
 

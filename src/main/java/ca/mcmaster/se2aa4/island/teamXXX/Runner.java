@@ -12,7 +12,7 @@ public class Runner {
             run(Explorer.class) //this repeatedly calls takeDecision() until it encouters "stop" action or no battery left
                     .exploring(new File(filename))
                     .withSeed(42L)
-                    .startingAt(1, 1, "EAST") //start coordinates
+                    .startingAt(78,78, "EAST") //start coordinates
                     .backBefore(7000) //bot must return before 7000 battery level used
                     .withCrew(5) 
                     .collecting(1000, "WOOD")
