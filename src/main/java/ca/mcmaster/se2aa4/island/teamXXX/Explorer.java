@@ -6,13 +6,17 @@ import org.apache.logging.log4j.Logger;
 
 import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.json.JSONTokener;
 
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-    int i = 0;
+    
+    private int x = 0;
+    private int y = 0;
+    private int range = -1;
+    private boolean exploredEast = false;
+    private boolean exploredSouth = false;
 
     @Override
     public void initialize(String s) {
@@ -30,17 +34,31 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision() {
         JSONObject decision = new JSONObject();
         JSONObject parameters = new JSONObject();
-        if (i==0) {
-            decision.put("action", "echo"); 
-            parameters.put("direction", "E"); //E is x dimension, change to S for y dimension
-            decision.put("parameters", parameters);
-        }
+        if (!exploredEast && range == -1) {
+            decision.put("action", "echo");
+            parameters.put("direction", "E");  // Start by exploring East
+        } 
+        else if (!exploredEast) {
+            // Only set x = range *after* range is known
+            x = range;
+            exploredEast = true;
+
+            decision.put("action", "echo");
+            parameters.put("direction", "S"); // Move South next
+        } 
+        else if (!exploredSouth) {
+            y = range;
+            exploredSouth = true;
+
+            decision.put("action", "stop");
+        } 
         else {
             decision.put("action", "stop");
         }
-        // we stop the exploration immediately
+        logger.info("Current coordinates: x = {}, y = {}", x, y);
+        
+        decision.put("parameters", parameters);
         logger.info("** Decision: {}",decision.toString());
-        i++;
         return decision.toString();
     }
 
@@ -54,6 +72,11 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
+
+        if (response.getJSONObject("extras").has("range")) {
+            range = response.getJSONObject("extras").getInt("range");
+            logger.info("** Updated range value: {}", range);
+        }
     }
 
     @Override
