@@ -11,9 +11,16 @@ import org.json.JSONTokener;
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
+    
+    private int x = 0;
+    private int y = 0;
+    private int range = -1;
+    private boolean exploredEast = false;
+    private boolean exploredSouth = false;
 
     @Override
     public void initialize(String s) {
+        //'s' parameter is the simulation startup info as a JSON string
         logger.info("** Initializing the Exploration Command Center");
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
@@ -26,7 +33,30 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        decision.put("action", "stop"); // we stop the exploration immediately
+        JSONObject parameters = new JSONObject();
+        if (!exploredEast && range == -1) {
+            decision.put("action", "scan");
+            //parameters.put("direction", "E");  // Start by exploring East
+        } 
+        else if (!exploredEast) {
+            x = range;
+            exploredEast = true;
+
+            decision.put("action", "echo");
+            parameters.put("direction", "S"); // Move South next
+        } 
+        else if (!exploredSouth) {
+            y = range;
+            exploredSouth = true;
+
+            decision.put("action", "stop");
+        } 
+        else {
+            decision.put("action", "stop");
+        }
+        logger.info("Current coordinates: x = {}, y = {}", x, y);
+        
+        decision.put("parameters", parameters);
         logger.info("** Decision: {}",decision.toString());
         return decision.toString();
     }
@@ -41,6 +71,11 @@ public class Explorer implements IExplorerRaid {
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
+
+        if (response.getJSONObject("extras").has("range")) {
+            range = response.getJSONObject("extras").getInt("range");
+            logger.info("** Updated range value: {}", range);
+        }
     }
 
     @Override
