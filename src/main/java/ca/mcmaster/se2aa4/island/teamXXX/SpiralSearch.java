@@ -1,6 +1,4 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
-import org.json.JSONObject;
-
 
 public class SpiralSearch extends Explorer{
     int current_step = 1;
@@ -10,29 +8,26 @@ public class SpiralSearch extends Explorer{
     Compass current_heading = n.getC();
     Drone d = new Drone(current_heading);
 
-    public void getDimensions() {
-        
-    }
-    
-    // 1. go to middle (need x and y coordinates from explorer)
-    //n.move_to(n.getMaxX()/2, n.getMaxY()/2); //moves to center of map
-
     //forward -> turn -> forward -> turn -> increase step size by increment
-    public void spiral() {
+    public void spiralSearchAlgorithm() {
         for (int i=0; i<current_step; i++) {
+            d.echo(current_heading); //echo in front
             d.fly();
             d.scan();
         }
-        d.turnLeft();
+        current_heading = current_heading.previous();
+        d.echo(current_heading);
+        d.turnLeft();  
         for (int i=0; i<current_step; i++) {
+            d.echo(current_heading); //echo in front
             d.fly();
             d.scan();
         }
+        current_heading = current_heading.previous();
+        d.echo(current_heading);
         d.turnLeft();
         current_step = current_step + increment;
     }
-
-    
 
 
     /*

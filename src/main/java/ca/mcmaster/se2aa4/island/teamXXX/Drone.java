@@ -20,12 +20,14 @@ public class Drone implements DroneActions{
     @Override
     public void turnLeft() {
         n.move(Movement.Left);
-        parameters.put("direction", heading.previous());
+        heading = heading.previous();
+        parameters.put("direction", heading.name());
     }
 
     public void turnRight() {
         n.move(Movement.Right);
-        parameters.put("direction", heading.next());
+        heading = heading.next();
+        parameters.put("direction", heading.name());
     }
 
     @Override
@@ -36,5 +38,10 @@ public class Drone implements DroneActions{
     @Override
     public void stop() {
         decision.put("action", "stop");
+    }
+
+    public void echo(Compass direction) {
+        decision.put("action", "echo");
+        parameters.put("direction", direction.name());
     }
 }

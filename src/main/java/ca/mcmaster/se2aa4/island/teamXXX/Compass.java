@@ -4,12 +4,12 @@ public enum Compass {
     N, E, S, W;
     
     // Turn right
-    public String next() {
-        return values()[(this.ordinal() + 1) % values().length].name();
+    public Compass next() {
+        return values()[(this.ordinal() + 1) % values().length];
     }
 
     // Turn left
-    public String previous() {
-        return values()[(this.ordinal() - 1 + values().length) % values().length].name();
+    public Compass previous() {
+        return values()[(this.ordinal() - 1 + values().length) % values().length];
     }
 }

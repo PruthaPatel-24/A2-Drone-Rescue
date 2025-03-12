@@ -6,4 +6,5 @@ interface DroneActions {
     void turnRight();
     void scan();
     void stop();
+    void echo(Compass heading);
 }

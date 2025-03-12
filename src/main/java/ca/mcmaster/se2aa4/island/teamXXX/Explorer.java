@@ -77,7 +77,7 @@ public class Explorer implements IExplorerRaid {
         Integer cost = response.getInt("cost");
         batteryIsLow = current_battery_life.reduce_battery(cost);
         if (batteryIsLow) {
-            drone.stop();
+            drone.goHome();
         }
 
         logger.info("The cost of the action was {}", cost);
@@ -100,6 +100,21 @@ public class Explorer implements IExplorerRaid {
         if (response.getJSONObject("extras").has("sites")) {
             logger.info("Emergency Site Found!!");
             map.foundEmergencySite();
+        }
+
+        if (extraInfo.has("found")) {
+            String foundValue = extraInfo.getString("found");
+            if ("OUT_OF_RANGE".equals(foundValue)) {
+                range = response.getJSONObject("extras").getInt("range");
+                /*
+                 * we can have another method in drone like checkEcho() or smth that will tell 
+                 * us to go in the other direction if the echo shows out of range 
+                 * withina certain distance
+                 * 
+                 * The function will probably take the range as a parameter
+                 */
+                logger.info("** the drone is out of range");
+            }
         }
 
         //Sites and creeks are returned in an array with the site and creek ID which we might also need to store
