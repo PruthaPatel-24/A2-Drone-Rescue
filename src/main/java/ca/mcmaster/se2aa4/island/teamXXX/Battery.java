@@ -2,8 +2,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 public class Battery {
     int battery_life;
-    Drone drone = new Drone();
-
+    
     public Battery(int battery) {
         this.battery_life = battery;
     }
