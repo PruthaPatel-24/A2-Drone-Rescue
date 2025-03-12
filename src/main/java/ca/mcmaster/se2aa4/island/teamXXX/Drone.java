@@ -3,13 +3,11 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import org.json.JSONObject;
 
 public class Drone implements DroneActions{
-    private int battery_life;
     private String heading;
-    private JSONObject decision;
-    private JSONObject parameters;
+    JSONObject decision = new JSONObject();
+    JSONObject parameters = new JSONObject();
 
-    public Drone(int batteryBudget, String heading, JSONObject decision, JSONObject parameters) {
-        this.battery_life = batteryBudget;
+    public Drone(String heading, JSONObject decision, JSONObject parameters) {
         this.heading = heading;
         this.decision = decision;
         this.parameters = parameters;
@@ -27,7 +25,6 @@ public class Drone implements DroneActions{
 
     @Override
     public void scan() {
-        if ()
         decision.put("action", "scan");
     }
 
