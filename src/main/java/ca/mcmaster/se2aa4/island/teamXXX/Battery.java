@@ -8,10 +8,6 @@ public class Battery {
         this.battery_life = battery;
     }
 
-    public get_battery_life() {
-        drone.
-    }
-
     public int reduce_battery(int cost) {
         battery_life = battery_life - cost;
 
