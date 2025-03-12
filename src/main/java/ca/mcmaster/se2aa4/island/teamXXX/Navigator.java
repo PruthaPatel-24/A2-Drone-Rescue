@@ -8,13 +8,21 @@ import eu.ace_design.island.bot.IExplorerRaid;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class Navigate {
+public class Navigator {
     private int x; 
     private int y; 
     private int maxX;
     private int maxY; 
-    private Direction d = Direction.East; //direction drone is facing
+    private Direction d = Compass.East; //direction drone is facing
 
+    public void setMaxX(int i){
+        maxX = i;
+    }
+
+    public void setMaxY(int i){
+        maxY = i;
+    }
+ 
     private [][][] incr = {
         {{0, -1}, {+1, 0}, {0, +1}, {-1, 0}}, //move forward 
         {{-1,-1}, {+1, -1}, {+1, +1}, {-1, +1}}, // left turn 
