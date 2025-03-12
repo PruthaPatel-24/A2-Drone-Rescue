@@ -13,7 +13,8 @@ public class Navigator {
     private int y; 
     private int maxX;
     private int maxY; 
-    private Compass d = Compass.East; //direction drone is facing
+
+    private Compass c = Compass.E; //direction drone is facing
 
     public void setMaxX(int i){
         maxX = i;
@@ -23,18 +24,28 @@ public class Navigator {
         maxY = i;
     }
  
-    private int incr [][][] = 
-    {
+    public Compass getC (){
+        return c;
+    }
+
+    private int [][][] incr = {
         {{0, -1}, {+1, 0}, {0, +1}, {-1, 0}}, //move forward 
         {{-1,-1}, {+1, -1}, {+1, +1}, {-1, +1}}, // left turn 
         {{+1, -1}, {+1, +1}, {-1, +1}, {-1, -1}}  // right turn
-    };
+    }; 
     
-    public String move(int currX, int currY, Movement m){
-        x = currX + incr[m.ordinal()][d.ordinal()][0];
-        y = currY + incr[m.ordinal()][d.ordinal()][1];
+    public moveTo(int x, int y){
+        //calls move to 
+    }
 
-        d = Compass.values()[(d.ordinal() + m.ordinal()) % d.values().length];
+    public void move(int xCurr, int yCurr, Movement m){
+        x = x + incr[m.ordinal()][d.ordinal()][0];
+        y = y + incr[m.ordinal()][d.ordinal()][1];
+
+        c = Compass.values()[(d.ordinal() + m.ordinal()) % c.values().length];
+    }
+
+    public void goHome(){
 
     }
 
@@ -42,5 +53,5 @@ public class Navigator {
 
 
 }
-public enum Compass {North, East, South, West};
+public enum Compass {N, E, S, W};
 public enum Movement {Forward, Left, Right};
