@@ -1,4 +1,6 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
+import org.json.JSONObject;
+
 
 public class SpiralSearch extends Explorer{
     int current_step = 1;
@@ -23,7 +25,7 @@ public class SpiralSearch extends Explorer{
     parameters.put("direction", String.valueOf(n.getC()));
 
     while (/*echo not out of bounds*/){
-        n.move(foward);
+        n.move(forward);
         search();
         n.turn(left);
         search();

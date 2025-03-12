@@ -34,13 +34,13 @@ public class Navigator {
         {{+1, -1}, {+1, +1}, {-1, +1}, {-1, -1}}  // right turn
     }; 
     
-    public moveTo(int x, int y){
+    public void moveTo(int x, int y){
         //calls move to 
     }
 
     public void move(int xCurr, int yCurr, Movement m){
-        x = x + incr[m.ordinal()][d.ordinal()][0];
-        y = y + incr[m.ordinal()][d.ordinal()][1];
+        x = x + incr[m.ordinal()][c.ordinal()][0];
+        y = y + incr[m.ordinal()][c.ordinal()][1];
 
         c = Compass.values()[(d.ordinal() + m.ordinal()) % c.values().length];
     }

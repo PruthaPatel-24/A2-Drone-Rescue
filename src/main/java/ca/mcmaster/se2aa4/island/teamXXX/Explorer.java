@@ -29,12 +29,15 @@ public class Explorer implements IExplorerRaid {
         Battery current_battery_life = new Battery(batteryLevel);
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
+
+        public Drone drone = new Drone(direction);
     }
 
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
         JSONObject parameters = new JSONObject();
+        
         if (!exploredEast && range == -1) {
             decision.put("action", "scan");
             //parameters.put("direction", "E");  // Start by exploring East
@@ -71,12 +74,19 @@ public class Explorer implements IExplorerRaid {
         String status = response.getString("status");
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
+
         logger.info("Additional information received: {}", extraInfo);
 
         if (response.getJSONObject("extras").has("range")) {
             range = response.getJSONObject("extras").getInt("range");
             logger.info("** Updated range value: {}", range);
         }
+
+        if (response.getJSONObject("extras").has("creeks")) {
+            logger.info("Creek Found!!");
+            drone.foundCreek();
+        }
+
     }
 
     @Override
