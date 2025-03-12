@@ -3,14 +3,13 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import org.json.JSONObject;
 
 public class Drone implements DroneActions{
-    private String heading;
+    private Compass heading;
     JSONObject decision = new JSONObject();
     JSONObject parameters = new JSONObject();
+    Navigator n = new Navigator();
 
-    public Drone(String heading, JSONObject decision, JSONObject parameters) {
+    public Drone(Compass heading) {
         this.heading = heading;
-        this.decision = decision;
-        this.parameters = parameters;
     }
 
     @Override
@@ -19,8 +18,14 @@ public class Drone implements DroneActions{
     }
 
     @Override
-    public void changeDirection() {
-        parameters.put("direction", n.move());
+    public void turnLeft() {
+        n.move(Movement.Left);
+        parameters.put("direction", heading.previous());
+    }
+
+    public void turnRight() {
+        n.move(Movement.Right);
+        parameters.put("direction", heading.next());
     }
 
     @Override

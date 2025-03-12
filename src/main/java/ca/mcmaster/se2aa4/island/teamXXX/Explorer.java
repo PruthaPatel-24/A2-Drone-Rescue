@@ -17,6 +17,10 @@ public class Explorer implements IExplorerRaid {
     private int range = -1;
     private boolean exploredEast = false;
     private boolean exploredSouth = false;
+    Battery current_battery_life;
+    private boolean batteryIsLow = false;
+    Drone drone;
+    Map map = new Map();
 
     @Override
     public void initialize(String s) {
@@ -26,11 +30,11 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Initialization info:\n {}",info.toString(2));
         String direction = info.getString("heading");
         Integer batteryLevel = info.getInt("budget");
-        Battery current_battery_life = new Battery(batteryLevel);
+        current_battery_life = new Battery(batteryLevel);
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 
-        public Drone drone = new Drone(direction);
+        drone = new Drone(Compass.valueOf(direction));
     }
 
     @Override
@@ -69,7 +73,13 @@ public class Explorer implements IExplorerRaid {
     public void acknowledgeResults(String s) {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Response received:\n"+response.toString(2));
+
         Integer cost = response.getInt("cost");
+        batteryIsLow = current_battery_life.reduce_battery(cost);
+        if (batteryIsLow) {
+            drone.stop();
+        }
+
         logger.info("The cost of the action was {}", cost);
         String status = response.getString("status");
         logger.info("The status of the drone is {}", status);
@@ -84,9 +94,15 @@ public class Explorer implements IExplorerRaid {
 
         if (response.getJSONObject("extras").has("creeks")) {
             logger.info("Creek Found!!");
-            drone.foundCreek();
+            map.foundCreek();
         }
 
+        if (response.getJSONObject("extras").has("sites")) {
+            logger.info("Emergency Site Found!!");
+            map.foundEmergencySite();
+        }
+
+        //Sites and creeks are returned in an array with the site and creek ID which we might also need to store
     }
 
     @Override

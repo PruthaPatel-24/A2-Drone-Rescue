@@ -1,19 +1,10 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-import java.io.StringReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import eu.ace_design.island.bot.IExplorerRaid;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
 public class Navigator {
     private int x; 
     private int y; 
     private int maxX;
     private int maxY; 
-
     private Compass c = Compass.E; //direction drone is facing
 
     public void setMaxX(int i){
@@ -38,20 +29,22 @@ public class Navigator {
         //calls move to 
     }
 
-    public void move(int xCurr, int yCurr, Movement m){
+    public void move(Movement m){
         x = x + incr[m.ordinal()][c.ordinal()][0];
         y = y + incr[m.ordinal()][c.ordinal()][1];
 
-        c = Compass.values()[(d.ordinal() + m.ordinal()) % c.values().length];
+        c = Compass.values()[(c.ordinal() + m.ordinal()) % c.values().length];
+    }
+
+    public int getCurrentX() {
+        return x;
+    }
+
+    public int getCurrentY() {
+        return y;
     }
 
     public void goHome(){
 
     }
-
-
-
-
 }
-public enum Compass {N, E, S, W};
-public enum Movement {Forward, Left, Right};
