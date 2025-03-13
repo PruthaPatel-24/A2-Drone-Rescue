@@ -12,4 +12,5 @@ public enum Compass {
     public Compass previous() {
         return values()[(this.ordinal() - 1 + values().length) % values().length];
     }
+
 }
