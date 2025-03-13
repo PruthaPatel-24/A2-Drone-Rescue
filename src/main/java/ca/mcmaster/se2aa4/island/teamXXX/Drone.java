@@ -82,16 +82,19 @@ public class Drone implements DroneActions {
 
     }
 
-    public void updateEchoData(int range, Terrain landDetected, Movement direction) {
-        if (direction == Movement.Left) {
+    public void updateEchoData(int range, Terrain landDetected, Compass direction) {
+        Movement wing = heading.compassToMovement(direction); //paramater takes in which direction (n,e,s, w) you echoes
+
+        if (wing == Movement.Left) {
             echoDataLeft.setRange(range);
             echoDataLeft.setLandDetected(landDetected);
-        } else if (direction == Movement.Right) {
+        } else if (wing == Movement.Right) {
             echoDataRight.setRange(range);
             echoDataRight.setLandDetected(landDetected);
-        } else if (direction == Movement.Forward) {
+        } else if (wing == Movement.Forward) {
             echoDataForward.setRange(range);
             echoDataForward.setLandDetected(landDetected);
         }
+        
     }
 }
