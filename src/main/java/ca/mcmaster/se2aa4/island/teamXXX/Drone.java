@@ -45,6 +45,7 @@ public class Drone implements DroneActions {
         decision.put("action", "stop");
     }
 
+    @Override
     public void echo(Compass direction) {
         decision.put("action", "echo");
         parameters.put("direction", direction.name());
