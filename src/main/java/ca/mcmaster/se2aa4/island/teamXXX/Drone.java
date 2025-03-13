@@ -71,34 +71,129 @@ public class Drone implements DroneActions {
         return echoDecision.toString();
     }
 
-    public void goToMiddle() {
-        echo(heading.previous()); //echo with left wing 
-        echo(heading.next()); //echo with right wing 
-        int width = 0;
+    public void fixX(){ //fix x-direction position to get to middle
+        int xMiddle = n.getCurrentX()/2;
+        // if too far left 
+        if (n.getCurrentX() < n.getCurrentX()/2){
+            if (heading != Compass.W){
+                turnLeft();
+                turnLeft();
+            }
+        }
+        // if too far right 
+        else if (n.getCurrentX() > n.getCurrentX()){
+            if (heading != Compass.E){
+                turnLeft();
+                turnLeft();
+            }
+        }
+        while (n.getCurrentX() != xMiddle){
+            fly();
+        }
+    }
 
-        //finds width 
+    public void fixY(){
+    //second fix y-direction position 
+        int yMiddle = n.getCurrentY()/2;
+        // if too far up
+        if (n.getCurrentY() < n.getCurrentY()/2){
+            if (heading != Compass.N){
+                turnLeft();
+                turnLeft();
+            }
+        }
+        // if too far down 
+        else if (n.getCurrentX() > n.getCurrentX()){
+            if (heading != Compass.S){
+                turnLeft();
+                turnLeft();
+            }
+        }
+        while (n.getCurrentY() != yMiddle){
+            fly();
+        }
+    }
+    //one prints statement in here to remove too 
+    public void goToMiddle() {
+        //finds dimension 1 
+        findDimension();
+        //find dimension 2
+        findDimension();
+
+        if (heading == Compass.N || heading == Compass.S){
+            fixY();
+            turnLeft();
+            fixX();
+        }
+        else{
+            fixX();
+            turnLeft();
+            fixY();
+        }
+        
+        System.out.println("okay at middle, my coordinates are, x: " + String.valueOf(n.getCurrentX()) + String.valueOf(n.getCurrentY()));
+
+    }
+
+    //note to prutha: please delete system.out.prints before submitting! - 7 to remove 
+    public void findDimension(){
+        int dimension = 0;
+        Compass startHeading = heading;
+        echo(heading.previous()); //echo with left wing 
+        echo(heading.next()); //echo with right wing
         if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() != Terrain.OUT_OF_RANGE) {
-            width += echoDataRight.getRange() + 2;
+            dimension += echoDataRight.getRange() + 2;
             turnLeft();
             echoDataForward.setLandDetected(Terrain.GROUND);
+            System.out.println("dimension at checkpoint 1= " + String.valueOf(dimension));
             while (echoDataForward.getLandDetected() != Terrain.OUT_OF_RANGE) { //KEEP MOVING FORWARD TILL FIND OTHER END 
                 echo(heading);
-                width += 1;
+                dimension += 1;
+                System.out.println("dimension at checkpoint 2= " + String.valueOf(dimension));
             }
-            width += echoDataForward.getRange();
+            dimension += echoDataForward.getRange();
+            System.out.println("dimension at checkpoint 3= " + String.valueOf(dimension));
+            updateDimension(dimension, echoDataForward.getRange(), startHeading);
+            
         } else if (echoDataLeft.getLandDetected() != Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE) {
-            width += echoDataLeft.getRange() + 2;
+            dimension += echoDataLeft.getRange() + 2;
             turnRight();
             echoDataForward.setLandDetected(Terrain.GROUND);
+            System.out.println("dimension at checkpoint 1= " + String.valueOf(dimension));
             while (echoDataForward.getLandDetected() != Terrain.OUT_OF_RANGE) { //KEEP MOVING FORWARD TILL FIND OTHER END 
                 echo(heading);
-                width += 1;
+                dimension += 1;
+                System.out.println("dimension at checkpoint 2= " + String.valueOf(dimension));
             }
-            width += echoDataForward.getRange();
+            dimension += echoDataForward.getRange();
+            System.out.println("dimension at checkpoint 3= " + String.valueOf(dimension));
+            updateDimension(dimension, echoDataForward.getRange(), startHeading);
         } else {
-            width = echoDataLeft.getRange() + echoDataRight.getRange();
+            dimension = echoDataLeft.getRange() + echoDataRight.getRange();
+            System.out.println("dimension at checkpoint 4= " + String.valueOf(dimension));
+            updateDimension(dimension, echoDataLeft.getRange(), Compass.values()[startHeading.ordinal()+1]);
         }
 
+    }
+    public void updateDimension(int totalDimension, int currLocation, Compass startHeading){
+        if (startHeading == Compass.N || startHeading == Compass.S){
+            n.setMaxX(totalDimension);
+            if (heading == Compass.N || heading == Compass.W){
+                n.setX(currLocation);
+            }
+            else if (heading == Compass.E || heading == Compass.S){
+                n.setX(totalDimension - currLocation);
+            }
+        }
+        else{ //setting y values 
+            n.setMaxY(totalDimension);
+            if (heading == Compass.E || heading == Compass.N){
+                n.setY(currLocation);
+            }
+            else if (heading == Compass.W || heading == Compass.S){
+                n.setY(totalDimension - currLocation);
+            }
+        }
     }
 
     public void updateEchoData(int range, Terrain landDetected, Compass direction) {

@@ -4,8 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Navigator {
-    private int x; 
-    private int y; 
+    private int x = -1; 
+    private int y = -1;
     private int maxX;
     private int maxY; 
     private Compass current_direction = Compass.E; //direction drone is facing
@@ -26,6 +26,14 @@ public class Navigator {
         logger.info("set current direction: " + current_direction +  " to start direction: " + starting_direction);
         current_direction = starting_direction;
 
+    }
+
+    public void setX(int i){
+        x = i;
+    }
+
+    public void setY(int i){
+        y = i;
     }
 
     public void setMaxX(int i){
