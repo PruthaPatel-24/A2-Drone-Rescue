@@ -41,6 +41,7 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision() {
         JSONObject decision = new JSONObject();
         JSONObject parameters = new JSONObject();
+        String echoDirection = "S";
         
         if (!exploredEast && range == -1) {
             decision.put("action", "scan");
@@ -51,7 +52,7 @@ public class Explorer implements IExplorerRaid {
             exploredEast = true;
 
             decision.put("action", "echo");
-            parameters.put("direction", "S"); // Move South next
+            parameters.put("direction", echoDirection); // Move South next
         } 
         else if (!exploredSouth) {
             y = range;
@@ -116,8 +117,7 @@ public class Explorer implements IExplorerRaid {
                  */
                 logger.info("** the drone is out of range");
             }
-            //HELP NEEDED HERE: THIRD PARAMATER IS CURRENTLY HARD CODED -- HOW TO RETREIVE ECHO DIRECTION FROM DEICSION METHOD?
-            drone.updateEchoData(range, Terrain.valueOf(foundValue), Movement.Forward/*echoDirection (l, r, forward - of movement type)*/);
+            drone.updateEchoData(range, Terrain.valueOf(foundValue), Compass.valueOf(response.getString("echoDirection")));
         }
 
         //Sites and creeks are returned in an array with the site and creek ID which we might also need to store
