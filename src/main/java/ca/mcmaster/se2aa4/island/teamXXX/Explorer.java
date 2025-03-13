@@ -35,6 +35,8 @@ public class Explorer implements IExplorerRaid {
         logger.info("Battery level is {}", batteryLevel);
 
         drone = new Drone(Compass.valueOf(direction));
+        Execution execution = new Execution(drone);
+
     }
 
     @Override

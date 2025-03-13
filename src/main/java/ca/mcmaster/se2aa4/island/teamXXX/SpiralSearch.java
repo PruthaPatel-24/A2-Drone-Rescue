@@ -1,15 +1,14 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class SpiralSearch extends Explorer{
+public class SpiralSearch {
     int current_step = 1;
     int increment = 1;
 
     Navigator n = new Navigator();
     Compass current_heading = n.getC();
-    Drone d = new Drone(current_heading);
 
     //forward -> turn -> forward -> turn -> increase step size by increment
-    public void spiralSearchAlgorithm() {
+    public void spiralSearchAlgorithm(Drone d) {
         for (int i=0; i<current_step; i++) {
             d.echo(current_heading); //echo in front
             d.fly();
