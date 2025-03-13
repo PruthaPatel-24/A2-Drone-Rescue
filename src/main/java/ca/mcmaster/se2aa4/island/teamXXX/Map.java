@@ -5,15 +5,28 @@ public class Map {
     int y_creek;
     int x_emergsite;
     int y_emergsite;
+    Boolean creek_found;
+    Boolean emergency_site_found;
     Navigator location = new Navigator();
 
-    public void foundCreek() {
+    public Boolean foundCreek() {
         x_creek = location.getCurrentX();
         y_creek = location.getCurrentY();
+        return creek_found = true;
     }
 
-    public void foundEmergencySite() {
+    public Boolean foundEmergencySite() {
         x_emergsite = location.getCurrentX();
         y_emergsite = location.getCurrentY();
+        return emergency_site_found = true;
+    }
+
+    public Boolean foundBoth() {
+        if (creek_found && emergency_site_found) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

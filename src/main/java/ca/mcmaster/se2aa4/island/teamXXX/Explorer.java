@@ -5,6 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import eu.ace_design.island.bot.IExplorerRaid;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -18,6 +20,7 @@ public class Explorer implements IExplorerRaid {
     Drone drone;
     Map map = new Map();
     int range;
+    SpiralSearch search = new SpiralSearch();
 
     @Override
     public void initialize(String s) {
@@ -37,19 +40,12 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        JSONObject parameters = new JSONObject();
-
-        if (i == 0) {
-            decision.put("action", "echo");
-            parameters.put("direction", "W");
-        }
-        else {
+        if (i >= 5) {
             decision.put("action", "stop");
+            return decision.toString();  // Stop sending commands after 5 iterations
         }
         i++;
-        decision.put("parameters", parameters);
-        logger.info("** Decision: {}",decision.toString());
-        return decision.toString();
+        return search.spiralSearchAlgorithm();
     }
 
     @Override
@@ -65,11 +61,11 @@ public class Explorer implements IExplorerRaid {
         
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
-
-        batteryIsLow = current_battery_life.reduce_battery(cost);
-        if (batteryIsLow) {
-            drone.stop();
-        }
+        
+        //batteryIsLow = current_battery_life.reduce_battery(cost);
+        //if (batteryIsLow) {
+        //    drone.stop();
+        //}
 
         if (response.getJSONObject("extras").has("range")) {
             range = response.getJSONObject("extras").getInt("range");
@@ -79,12 +75,12 @@ public class Explorer implements IExplorerRaid {
 
         if (response.getJSONObject("extras").has("creeks")) {
             logger.info("Creek Found!!");
-            map.foundCreek();
+            //map.foundCreek();
         }
 
         if (response.getJSONObject("extras").has("sites")) {
             logger.info("Emergency Site Found!!");
-            map.foundEmergencySite();
+            //map.foundEmergencySite();
         }
 
         if (extraInfo.has("found")) {
@@ -101,7 +97,7 @@ public class Explorer implements IExplorerRaid {
                 logger.info("** the drone is out of range");
             }
             //HELP NEEDED HERE: THIRD PARAMATER IS CURRENTLY HARD CODED -- HOW TO RETREIVE ECHO DIRECTION FROM DEICSION METHOD?
-            drone.updateEchoData(range, Terrain.valueOf(foundValue), Movement.Forward/*echoDirection (l, r, forward - of movement type)*/);
+            //drone.updateEchoData(range, Terrain.valueOf(foundValue), Movement.Forward/*echoDirection (l, r, forward - of movement type)*/);
         }
         //Sites and creeks are returned in an array with the site and creek ID which we might also need to store
     }
