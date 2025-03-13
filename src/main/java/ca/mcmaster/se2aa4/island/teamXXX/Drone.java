@@ -7,6 +7,8 @@ public class Drone implements DroneActions{
     JSONObject decision = new JSONObject();
     JSONObject parameters = new JSONObject();
     Navigator n = new Navigator();
+    EchoData echoData = new EchoData();
+
 
     public Drone(Compass heading) {
         this.heading = heading;
@@ -43,5 +45,10 @@ public class Drone implements DroneActions{
     public void echo(Compass direction) {
         decision.put("action", "echo");
         parameters.put("direction", direction.name());
+    }
+
+    public void updateEchoData(int range, Terrain landDetected) {
+        echoData.setRange(range);
+        echoData.setLandDetected(landDetected);
     }
 }
