@@ -1,11 +1,19 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
 public class Navigator {
-    private int x; 
-    private int y; 
+    private int x = -1; 
+    private int y = -1;
     private int maxX;
     private int maxY; 
     private Compass c = Compass.E; //direction drone is facing
+
+    public void setX(int i){
+        x = i;
+    }
+
+    public void setY(int i){
+        y = i;
+    }
 
     public void setMaxX(int i){
         maxX = i;
