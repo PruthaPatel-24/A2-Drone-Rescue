@@ -115,10 +115,12 @@ public class Drone implements DroneActions {
     }
     //one prints statement in here to remove too 
     public void goToMiddle() {
+        int state = -1; 
         //finds dimension 1 
-        findDimension();
+        
+        findDimension(state);
         //find dimension 2
-        findDimension();
+        findDimension(state);
 
         if (heading == Compass.N || heading == Compass.S){
             fixY();
@@ -135,43 +137,52 @@ public class Drone implements DroneActions {
 
     }
 
-    //note to prutha: please delete system.out.prints before submitting! - 7 to remove 
-    public void findDimension(){
+    public void findDimension(int state){  
         int dimension = 0;
         Compass startHeading = heading;
-        echo(heading.previous()); //echo with left wing 
-        echo(heading.next()); //echo with right wing
-        if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() != Terrain.OUT_OF_RANGE) {
-            dimension += echoDataRight.getRange() + 2;
-            turnLeft();
-            echoDataForward.setLandDetected(Terrain.GROUND);
-            System.out.println("dimension at checkpoint 1= " + String.valueOf(dimension));
-            while (echoDataForward.getLandDetected() != Terrain.OUT_OF_RANGE) { //KEEP MOVING FORWARD TILL FIND OTHER END 
-                echo(heading);
-                dimension += 1;
-                System.out.println("dimension at checkpoint 2= " + String.valueOf(dimension));
+        state++; 
+        if (state == 0){
+            echo(heading.previous()); //echo with left wing
+        } 
+        else if (state == 1){
+            echo(heading.next()); //echo with right wing
+        }
+        else if (state == 2 || state == 3){
+            if (echoDataLeft.getLandDetected() == Terrain.OUT_OF_RANGE && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE){
+                dimension = echoDataLeft.getRange() + echoDataRight.getRange();
+                updateDimension(dimension, echoDataLeft.getRange(), Compass.values()[startHeading.ordinal()+1]);
+                state = 5; // 5 means completed dimension find! 
             }
-            dimension += echoDataForward.getRange();
-            System.out.println("dimension at checkpoint 3= " + String.valueOf(dimension));
-            updateDimension(dimension, echoDataForward.getRange(), startHeading);
-            
-        } else if (echoDataLeft.getLandDetected() != Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE) {
-            dimension += echoDataLeft.getRange() + 2;
-            turnRight();
-            echoDataForward.setLandDetected(Terrain.GROUND);
-            System.out.println("dimension at checkpoint 1= " + String.valueOf(dimension));
-            while (echoDataForward.getLandDetected() != Terrain.OUT_OF_RANGE) { //KEEP MOVING FORWARD TILL FIND OTHER END 
-                echo(heading);
-                dimension += 1;
-                System.out.println("dimension at checkpoint 2= " + String.valueOf(dimension));
+            else if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.GROUND){
+                //can start spiral searching from here lowkey 
             }
-            dimension += echoDataForward.getRange();
-            System.out.println("dimension at checkpoint 3= " + String.valueOf(dimension));
-            updateDimension(dimension, echoDataForward.getRange(), startHeading);
-        } else {
-            dimension = echoDataLeft.getRange() + echoDataRight.getRange();
-            System.out.println("dimension at checkpoint 4= " + String.valueOf(dimension));
-            updateDimension(dimension, echoDataLeft.getRange(), Compass.values()[startHeading.ordinal()+1]);
+            else{
+                if (state == 2){
+                    if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() != Terrain.OUT_OF_RANGE) {
+                        dimension += echoDataRight.getRange() + 2;
+                        turnLeft();
+                    } else if (echoDataLeft.getLandDetected() != Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE) {
+                        dimension += echoDataLeft.getRange() + 2;
+                        turnRight();
+                    }
+                    echoDataForward.setLandDetected(Terrain.GROUND);
+                }
+                if (state == 3){
+                    if (echoDataForward.getLandDetected() == Terrain.OUT_OF_RANGE){ //stop moving forward 
+                        state = 5;
+                    }
+                    echo(heading);
+                    dimension +=1; 
+                    /*
+                    while (echoDataForward.getLandDetected() != Terrain.OUT_OF_RANGE) { //KEEP MOVING FORWARD TILL FIND OTHER END 
+                        echo(heading);
+                        dimension += 1;
+                    }
+                    */
+                }
+                dimension += echoDataForward.getRange();
+                updateDimension(dimension, echoDataForward.getRange(), startHeading);
+            }
         }
 
     }
