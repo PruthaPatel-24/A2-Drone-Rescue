@@ -3,29 +3,43 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 public class SpiralSearch {
     int current_step = 1;
     int increment = 1;
+    int state = 0;
+    int increase_step = 0;
 
     Navigator n = new Navigator();
     Compass current_heading = n.getC();
 
     //forward -> turn -> forward -> turn -> increase step size by increment
-    public void spiralSearchAlgorithm(Drone d) {
-        for (int i=0; i<current_step; i++) {
-            d.echo(current_heading); //echo in front
-            d.fly();
-            d.scan();
+    public String spiralSearchAlgorithm() {
+        if (increase_step == 2) {
+            current_step = current_step + increment;
         }
-        current_heading = current_heading.previous();
-        d.echo(current_heading);
-        d.turnLeft();  
-        for (int i=0; i<current_step; i++) {
-            d.echo(current_heading); //echo in front
-            d.fly();
-            d.scan();
+
+        if (state == 0) {
+            state++;
+            return d.echo(current_heading);
         }
-        current_heading = current_heading.previous();
-        d.echo(current_heading);
-        d.turnLeft();
-        current_step = current_step + increment;
+        else if (state == 1) {
+            state++;
+            return d.fly();
+        }
+        else if (state == 2) {
+            state++;
+            return d.scan();
+        }
+        else if (state == 3) {
+            state++;
+            current_heading = current_heading.previous();
+            return d.echo(current_heading);
+        }
+        else if (state == 4) {
+            state++;
+            increase_step++;
+            return d.turnLeft();
+        }
+        else {
+            return d.stop();
+        }
     }
 
 

@@ -17,39 +17,45 @@ public class Drone implements DroneActions {
     }
 
     @Override
-    public void fly() {
+    public String fly() {
         decision.put("action", "fly");
+        return decision.toString();
     }
 
     @Override
-    public void turnLeft() {
+    public String turnLeft() {
         n.move(Movement.Left);
         heading = heading.previous();
+        decision.put("action", "heading");
         parameters.put("direction", heading.name());
+        decision.put("paramemters", parameters);
+        return decision.toString();
     }
 
-    @Override
-    public void turnRight() {
+    public String turnRight() {
         n.move(Movement.Right);
         heading = heading.next();
+        decision.put("action", "heading");
         parameters.put("direction", heading.name());
+        return decision.toString();
     }
 
     @Override
-    public void scan() {
+    public String scan() {
         decision.put("action", "scan");
+        return decision.toString();
     }
 
     @Override
-    public void stop() {
+    public String stop() {
         decision.put("action", "stop");
+        return decision.toString();
     }
 
-    @Override
-    public void echo(Compass direction) {
+    public String echo(Compass direction) {
         decision.put("action", "echo");
         parameters.put("direction", direction.name());
-
+        return decision.toString();
     }
 
     public void goToMiddle() {
