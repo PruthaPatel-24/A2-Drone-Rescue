@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class SpiralSearch {
+
     private final Logger logger = LogManager.getLogger();
     int current_step = 4;
     int increment = 4;
@@ -27,14 +28,13 @@ public class SpiralSearch {
             currentStateReached = false;
             side = 1;
         }
-        if (currentStateReached == true){
-            state = 3; 
+        if (currentStateReached == true) {
+            state = 3;
         }
 
         if (i <= current_step && currentStateReached == false && state != 2) {
             state = 1;
-        }
-        else if (i > current_step) {
+        } else if (i > current_step) {
             logger.info("okay so we should turn now");
             currentStateReached = true;
         }
@@ -42,32 +42,33 @@ public class SpiralSearch {
         if (state == 0) {
             logger.info("in state 0");
             return d.echo(current_heading);
-        }
-        else if (state == 1) {
+        } else if (state == 1) {
             logger.info("in state 1");
             return d.fly();
-        }
-        else if (state == 2) {
+        } else if (state == 2) {
             logger.info("in state 2");
             return d.scan();
-        }
-        else if (state == 3) {
+        } else if (state == 3) {
             logger.info("in state 3");
             current_heading = current_heading.previous();
-            currentStateReached = false; /********** */
+            currentStateReached = false;
+            /**
+             * ********
+             */
             return d.echo(current_heading);
-        }
-        else if (state == 4) {
+        } else if (state == 4) {
             state = -1;
-            i = 0; /*** */
+            i = 0;
+            /**
+             * *
+             */
             currentStateReached = false;
             logger.info("in state 4");
             side++;
             logger.info("the increase step = ");
             logger.info(side);
             return d.turnLeft();
-        }
-        else {
+        } else {
             return d.stop();
         }
     }
