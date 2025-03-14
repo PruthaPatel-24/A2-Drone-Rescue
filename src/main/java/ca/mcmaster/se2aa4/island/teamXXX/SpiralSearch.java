@@ -1,10 +1,16 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class SpiralSearch extends Explorer{
-    int current_step = 1;
-    int increment = 1;
-    int state = 0;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class SpiralSearch {
+    private final Logger logger = LogManager.getLogger();
+    int current_step = 2;
+    int increment = 2;
+    int state = -1;
+    int i = 0;
     int increase_step = 0;
+    boolean currentStateReached = false;
 
     Navigator n = new Navigator();
     Compass current_heading = n.getC();
@@ -12,30 +18,45 @@ public class SpiralSearch extends Explorer{
 
     //forward -> turn -> forward -> turn -> increase step size by increment
     public String spiralSearchAlgorithm() {
-        if (increase_step == 2) {
+        state++;
+        i++;
+
+        if (increase_step % 2 == 0) {
+            logger.info("increasing step size");
             current_step = current_step + increment;
+            currentStateReached = false;
+            i = 0;
+        }
+
+        if (i < current_step && currentStateReached == false && state != 2) {
+            state = 1;
+        }
+        else{
+            currentStateReached = true;
         }
 
         if (state == 0) {
-            state++;
+            logger.info("in state 0");
             return d.echo(current_heading);
         }
         else if (state == 1) {
-            state++;
+            logger.info("in state 1");
             return d.fly();
         }
         else if (state == 2) {
-            state++;
+            logger.info("in state 2");
             return d.scan();
         }
         else if (state == 3) {
-            state++;
+            logger.info("in state 3");
             current_heading = current_heading.previous();
             return d.echo(current_heading);
         }
         else if (state == 4) {
-            state++;
+            state = -1;
+            logger.info("in state 4");
             increase_step++;
+            logger.info(increase_step);
             return d.turnLeft();
         }
         else {
