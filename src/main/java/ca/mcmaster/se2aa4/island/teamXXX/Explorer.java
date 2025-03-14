@@ -16,7 +16,7 @@ public class Explorer implements IExplorerRaid {
     
     int i = 0;
     Battery current_battery_life;
-    private boolean batteryIsLow = false;
+    boolean batteryIsLow = false;
     Drone drone;
     Map map = new Map();
     int range;
@@ -40,8 +40,10 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        i++;
-        if (i < 500) {
+        Boolean map_found = map.foundBoth();
+        logger.info("Map found? ");
+        logger.info(map_found);
+        if (!map_found) {
             logger.info("calling spiral search algorithm");
             String searchValue = search.spiralSearchAlgorithm();
             logger.info(searchValue);
@@ -68,25 +70,20 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
         
-        //batteryIsLow = current_battery_life.reduce_battery(cost);
-        //if (batteryIsLow) {
-        //    drone.stop();
-        //}
-
-        if (response.getJSONObject("extras").has("range")) {
-            range = response.getJSONObject("extras").getInt("range");
-            logger.info("** Updated range value: {}", range);
-            
+        batteryIsLow = current_battery_life.reduce_battery(cost);
+        if (batteryIsLow) {
+            logger.info("battery is low");
+            drone.stop();
         }
 
-        if (response.getJSONObject("extras").has("creeks")) {
+        if (response.getJSONObject("extras").has("creeks") && response.getJSONObject("extras").getJSONArray("creeks").length() > 0) {
             logger.info("Creek Found!!");
-            //map.foundCreek();
+            map.foundCreek();
         }
 
-        if (response.getJSONObject("extras").has("sites")) {
+        if (response.getJSONObject("extras").has("sites") && response.getJSONObject("extras").getJSONArray("site").length() > 0) {
             logger.info("Emergency Site Found!!");
-            //map.foundEmergencySite();
+            map.foundEmergencySite();
         }
 
         if (extraInfo.has("found")) {

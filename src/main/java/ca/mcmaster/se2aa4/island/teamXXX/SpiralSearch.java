@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 public class SpiralSearch {
     private final Logger logger = LogManager.getLogger();
-    int current_step = 2;
+    int current_step = 4;
     int increment = 4;
     int state = -1;
     int i = 0;
