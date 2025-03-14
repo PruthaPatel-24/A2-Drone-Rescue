@@ -41,12 +41,18 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        if (i >= 5) {
-            decision.put("action", "stop");
-            return decision.toString();  // Stop sending commands after 5 iterations
-        }
         i++;
-        return search.spiralSearchAlgorithm();
+        if (i < 20) {
+            logger.info("calling spiral search algorithm");
+            String searchValue = search.spiralSearchAlgorithm();
+            logger.info(searchValue);
+            return searchValue;
+        }
+        else {
+            logger.info("stopping");
+            decision.put("action", "stop");
+            return decision.toString();
+        }
     }
 
     @Override
