@@ -5,7 +5,7 @@ public class Navigator {
     private int y = -1;
     private int maxX;
     private int maxY; 
-    private Compass c = Compass.E; //direction drone is facing
+    private Compass c = Compass.N; //direction drone is facing
 
     public void setX(int i){
         x = i;

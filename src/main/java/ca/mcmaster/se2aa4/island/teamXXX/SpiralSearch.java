@@ -1,32 +1,75 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class SpiralSearch extends Explorer{
-    int current_step = 1;
-    int increment = 1;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+public class SpiralSearch {
+    private final Logger logger = LogManager.getLogger();
+    int current_step = 2;
+    int increment = 4;
+    int state = -1;
+    int i = 0;
+    int side = 1;
+    boolean currentStateReached = false;
 
     Navigator n = new Navigator();
     Compass current_heading = n.getC();
     Drone d = new Drone(current_heading);
 
     //forward -> turn -> forward -> turn -> increase step size by increment
-    public void spiralSearchAlgorithm() {
-        for (int i=0; i<current_step; i++) {
-            d.echo(current_heading); //echo in front
-            d.fly();
-            d.scan();
+    public String spiralSearchAlgorithm() {
+        state++;
+        i++;
+
+        if (side == 3) {
+            logger.info("increasing step size");
+            current_step = current_step + increment;
+            currentStateReached = false;
+            side = 1;
         }
-        current_heading = current_heading.previous();
-        d.echo(current_heading);
-        d.turnLeft();  
-        for (int i=0; i<current_step; i++) {
-            d.echo(current_heading); //echo in front
-            d.fly();
-            d.scan();
+        if (currentStateReached == true){
+            state = 3; 
         }
-        current_heading = current_heading.previous();
-        d.echo(current_heading);
-        d.turnLeft();
-        current_step = current_step + increment;
+
+        if (i <= current_step && currentStateReached == false && state != 2) {
+            state = 1;
+        }
+        else if (i > current_step) {
+            logger.info("okay so we should turn now");
+            currentStateReached = true;
+        }
+
+        if (state == 0) {
+            logger.info("in state 0");
+            return d.echo(current_heading);
+        }
+        else if (state == 1) {
+            logger.info("in state 1");
+            return d.fly();
+        }
+        else if (state == 2) {
+            logger.info("in state 2");
+            return d.scan();
+        }
+        else if (state == 3) {
+            logger.info("in state 3");
+            current_heading = current_heading.previous();
+            currentStateReached = false; /********** */
+            return d.echo(current_heading);
+        }
+        else if (state == 4) {
+            state = -1;
+            i = 0; /*** */
+            currentStateReached = false;
+            logger.info("in state 4");
+            side++;
+            logger.info("the increase step = ");
+            logger.info(side);
+            return d.turnLeft();
+        }
+        else {
+            return d.stop();
+        }
     }
 
 

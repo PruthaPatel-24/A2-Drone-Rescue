@@ -5,7 +5,11 @@ import org.json.JSONObject;
 public class Drone implements DroneActions {
 
     private Compass heading;
-    JSONObject decision = new JSONObject();
+    JSONObject echoDecision = new JSONObject();
+    JSONObject scanDecision = new JSONObject();
+    JSONObject flyDecision = new JSONObject();
+    JSONObject headingDecision = new JSONObject();
+    JSONObject stopDecision = new JSONObject();
     JSONObject parameters = new JSONObject();
     Navigator n = new Navigator();
     EchoData echoDataLeft = new EchoData();
@@ -17,42 +21,49 @@ public class Drone implements DroneActions {
     }
 
     @Override
-    public void fly() {
+    public String fly() {
         n.move(Movement.Forward);
-        decision.put("action", "fly");
+        flyDecision.put("action", "fly");
+        return flyDecision.toString();
     }
 
     @Override
-    public void turnLeft() {
+    public String turnLeft() {
         n.move(Movement.Left);
         heading = heading.previous();
-        decision.put("action", "heading");
+        headingDecision.put("action", "heading");
         parameters.put("direction", heading.name());
+        headingDecision.put("parameters", parameters);
+        return headingDecision.toString();
     }
 
     @Override
-    public void turnRight() {
+    public String turnRight() {
         n.move(Movement.Right);
         heading = heading.next();
-        decision.put("action", "heading");
+        headingDecision.put("action", "heading");
         parameters.put("direction", heading.name());
+        headingDecision.put("parameters", parameters);
+        return headingDecision.toString();
     }
 
     @Override
-    public void scan() {
-        decision.put("action", "scan");
+    public String scan() {
+        scanDecision.put("action", "scan");
+        return scanDecision.toString();
     }
 
     @Override
-    public void stop() {
-        decision.put("action", "stop");
+    public String stop() {
+        stopDecision.put("action", "stop");
+        return stopDecision.toString();
     }
 
-    @Override
-    public void echo(Compass direction) {
-        decision.put("action", "echo");
+    public String echo(Compass direction) {
+        echoDecision.put("action", "echo");
         parameters.put("direction", direction.name());
-
+        echoDecision.put("parameters", parameters);
+        return echoDecision.toString();
     }
 
     public void fixX(){ //fix x-direction position to get to middle
