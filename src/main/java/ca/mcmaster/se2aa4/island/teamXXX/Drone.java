@@ -35,6 +35,7 @@ public class Drone implements DroneActions{
         return headingDecision.toString();
     }
 
+    @Override
     public String turnRight() {
         n.move(Movement.Right);
         heading = heading.next();

@@ -41,7 +41,7 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision() {
         JSONObject decision = new JSONObject();
         i++;
-        if (i < 20) {
+        if (i < 500) {
             logger.info("calling spiral search algorithm");
             String searchValue = search.spiralSearchAlgorithm();
             logger.info(searchValue);

@@ -6,10 +6,10 @@ import org.apache.logging.log4j.Logger;
 public class SpiralSearch {
     private final Logger logger = LogManager.getLogger();
     int current_step = 2;
-    int increment = 2;
+    int increment = 4;
     int state = -1;
     int i = 0;
-    int increase_step = 0;
+    int side = 1;
     boolean currentStateReached = false;
 
     Navigator n = new Navigator();
@@ -21,17 +21,21 @@ public class SpiralSearch {
         state++;
         i++;
 
-        if (increase_step % 2 == 0) {
+        if (side == 3) {
             logger.info("increasing step size");
             current_step = current_step + increment;
             currentStateReached = false;
-            i = 0;
+            side = 1;
+        }
+        if (currentStateReached == true){
+            state = 3; 
         }
 
-        if (i < current_step && currentStateReached == false && state != 2) {
+        if (i <= current_step && currentStateReached == false && state != 2) {
             state = 1;
         }
-        else{
+        else if (i > current_step) {
+            logger.info("okay so we should turn now");
             currentStateReached = true;
         }
 
@@ -50,13 +54,17 @@ public class SpiralSearch {
         else if (state == 3) {
             logger.info("in state 3");
             current_heading = current_heading.previous();
+            currentStateReached = false; /********** */
             return d.echo(current_heading);
         }
         else if (state == 4) {
             state = -1;
+            i = 0; /*** */
+            currentStateReached = false;
             logger.info("in state 4");
-            increase_step++;
-            logger.info(increase_step);
+            side++;
+            logger.info("the increase step = ");
+            logger.info(side);
             return d.turnLeft();
         }
         else {
