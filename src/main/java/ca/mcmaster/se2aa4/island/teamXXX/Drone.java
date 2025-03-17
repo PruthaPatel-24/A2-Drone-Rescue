@@ -25,6 +25,7 @@ public class Drone implements DroneActions {
 
     @Override
     public String fly() {
+        n.move(Movement.Forward);
         flyDecision.put("action", "fly");
         return flyDecision.toString();
     }

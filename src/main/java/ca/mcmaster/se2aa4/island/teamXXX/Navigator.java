@@ -1,11 +1,15 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Navigator {
-    private int x; 
-    private int y; 
+    private int x = 0; 
+    private int y = 0; 
     private int maxX;
     private int maxY; 
     private Compass c = Compass.N; //direction drone is facing
+    private final Logger logger = LogManager.getLogger();
 
     public void setMaxX(int i){
         maxX = i;
@@ -37,10 +41,12 @@ public class Navigator {
     }
 
     public int getCurrentX() {
+        logger.info("Current x: " + x);
         return x;
     }
 
     public int getCurrentY() {
+        logger.info("Current y: " + y);
         return y;
     }
 

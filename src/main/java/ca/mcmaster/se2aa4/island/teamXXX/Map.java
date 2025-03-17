@@ -1,11 +1,11 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Map {
-
-    int x_creek;
-    int y_creek;
+    int[][] creek_locations = new int[10][2];
+    int creeks_found = 0;
     int x_emergsite;
     int y_emergsite;
     Boolean creek_found = false;
@@ -13,16 +13,21 @@ public class Map {
     Navigator location = new Navigator();
     private final Logger logger = LogManager.getLogger();
 
-    public Boolean foundCreek() {
-        x_creek = location.getCurrentX();
-        y_creek = location.getCurrentY();
-        return creek_found = true;
+    public void foundCreek() {
+        creek_locations[creeks_found][0] = location.getCurrentX();
+        creek_locations[creeks_found][1] = location.getCurrentY();
+        creeks_found++;
+        logger.info("Creek locations: ");
+        for (int i = 0; i < creeks_found; i++) {
+            logger.info("Creek " + (i + 1) + ": X = " + creek_locations[i][0] + ", Y = " + creek_locations[i][1]);
+        }
+        creek_found = true;
     }
 
-    public Boolean foundEmergencySite() {
+    public void foundEmergencySite() {
         x_emergsite = location.getCurrentX();
         y_emergsite = location.getCurrentY();
-        return emergency_site_found = true;
+        emergency_site_found = true;
     }
 
     public Boolean foundBoth() {
