@@ -2,9 +2,6 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Map {
 
     int x_creek;
@@ -19,27 +16,20 @@ public class Map {
     public Boolean foundCreek() {
         x_creek = location.getCurrentX();
         y_creek = location.getCurrentY();
-        if (x_creek != 0 && y_creek != 0) {
-            return creek_found = true;
-        }
-        return creek_found = false;
+        return creek_found = true;
     }
 
     public Boolean foundEmergencySite() {
         x_emergsite = location.getCurrentX();
         y_emergsite = location.getCurrentY();
-        if (x_emergsite != 0 && y_emergsite != 0) {
-            return emergency_site_found = true;
-        }
-        return emergency_site_found = false;
+        return emergency_site_found = true;
     }
 
     public Boolean foundBoth() {
-        if (foundCreek() && foundEmergencySite()) {
-            logger.info("Sites were found");
+        if (creek_found == true && emergency_site_found == true) {
             return true;
-        } else {
-            logger.info("Sites were not found doo doo");
+        }
+        else {
             return false;
         }
     }

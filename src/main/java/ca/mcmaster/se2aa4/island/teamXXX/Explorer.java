@@ -39,14 +39,8 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         JSONObject decision = new JSONObject();
-        Boolean map_found = map.foundBoth();
-        logger.info("Map found? ");
-        logger.info(map_found);
-        if (!map_found) {
-            logger.info("calling spiral search algorithm");
-            String searchValue = search.spiralSearchAlgorithm();
-            logger.info(searchValue);
-            return searchValue;
+        if (!map.foundBoth()) {
+            return search.spiralSearchAlgorithm();
         }
         logger.info("stopping");
         decision.put("action", "stop");
@@ -67,14 +61,9 @@ public class Explorer implements IExplorerRaid {
         JSONObject extraInfo = response.getJSONObject("extras");
         logger.info("Additional information received: {}", extraInfo);
 
-        //batteryIsLow = current_battery_life.reduce_battery(cost);
-        //if (batteryIsLow) {
-        //    drone.stop();
-        //}
-        if (response.getJSONObject("extras").has("range")) {
-            range = response.getJSONObject("extras").getInt("range");
-            logger.info("** Updated range value: {}", range);
-
+        batteryIsLow = current_battery_life.reduce_battery(cost);
+        if (batteryIsLow) {
+            drone.stop();
         }
 
         if (response.getJSONObject("extras").has("creeks") && response.getJSONObject("extras").getJSONArray("creeks").length() > 0) {
@@ -82,7 +71,7 @@ public class Explorer implements IExplorerRaid {
             map.foundCreek();
         }
 
-        if (response.getJSONObject("extras").has("sites") && response.getJSONObject("extras").getJSONArray("site").length() > 0) {
+        if (response.getJSONObject("extras").has("sites") && response.getJSONObject("extras").getJSONArray("sites").length() > 0) {
             logger.info("Emergency Site Found!!");
             map.foundEmergencySite();
         }

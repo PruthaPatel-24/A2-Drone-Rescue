@@ -12,14 +12,12 @@ public class Battery {
 
     public boolean reduce_battery(int cost) {
         battery_life = battery_life - cost;
-        logger.info("battery life: ");
-        logger.info(battery_life);
+        logger.info("battery life: " + battery_life);
 
         if (battery_life < 200) {
             logger.info("low battery");
             return true;
         }
-        logger.info("battery is okay!");
         return false;
     }
 

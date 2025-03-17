@@ -52,16 +52,10 @@ public class SpiralSearch {
             logger.info("in state 3");
             current_heading = current_heading.previous();
             currentStateReached = false;
-            /**
-             * ********
-             */
             return d.echo(current_heading);
         } else if (state == 4) {
             state = -1;
             i = 0;
-            /**
-             * *
-             */
             currentStateReached = false;
             logger.info("in state 4");
             side++;
@@ -69,6 +63,7 @@ public class SpiralSearch {
             logger.info(side);
             return d.turnLeft();
         } else {
+            logger.info("outside of states: stopping");
             return d.stop();
         }
     }

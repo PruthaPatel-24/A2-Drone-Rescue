@@ -1,10 +1,13 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 public class Drone implements DroneActions {
 
     private Compass heading;
+    private final Logger logger = LogManager.getLogger();
     JSONObject echoDecision = new JSONObject();
     JSONObject scanDecision = new JSONObject();
     JSONObject flyDecision = new JSONObject();
@@ -54,6 +57,7 @@ public class Drone implements DroneActions {
 
     @Override
     public String stop() {
+        logger.info("Stop action called");
         stopDecision.put("action", "stop");
         return stopDecision.toString();
     }
