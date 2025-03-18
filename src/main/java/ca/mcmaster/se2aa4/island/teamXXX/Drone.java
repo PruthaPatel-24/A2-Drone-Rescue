@@ -14,13 +14,14 @@ public class Drone implements DroneActions {
     JSONObject headingDecision = new JSONObject();
     JSONObject stopDecision = new JSONObject();
     JSONObject parameters = new JSONObject();
-    Navigator n = new Navigator();
+    Navigator n;
     EchoData echoDataLeft = new EchoData();
     EchoData echoDataRight = new EchoData();
     EchoData echoDataForward = new EchoData();
 
     public Drone(Compass heading) {
         this.heading = heading;
+        this.n = Navigator.getInstance();
     }
 
     @Override

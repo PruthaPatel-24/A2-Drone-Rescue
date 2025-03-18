@@ -10,7 +10,7 @@ public class Map {
     int y_emergsite;
     Boolean creek_found = false;
     Boolean emergency_site_found = false;
-    Navigator location = new Navigator();
+    Navigator location = Navigator.getInstance();
     private final Logger logger = LogManager.getLogger();
 
     public void foundCreek() {

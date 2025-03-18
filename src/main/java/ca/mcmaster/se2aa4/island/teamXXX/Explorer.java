@@ -20,6 +20,7 @@ public class Explorer implements IExplorerRaid {
     Map map = new Map();
     int range;
     SpiralSearch search = new SpiralSearch();
+    Navigator navigator = Navigator.getInstance();
 
     @Override
     public void initialize(String s) {
@@ -34,6 +35,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("Battery level is {}", batteryLevel);
 
         drone = new Drone(Compass.valueOf(direction));
+        navigator.setDirection(Compass.valueOf(direction));
     }
 
     @Override
