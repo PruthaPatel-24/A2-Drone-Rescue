@@ -101,7 +101,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+        int[] closest_creek = map.closestCreek();
+        return "closest creek found to emergency site is at x: " + closest_creek[0] + " y: " + closest_creek[1]; //where is this getting returned to??
     }
 
 }

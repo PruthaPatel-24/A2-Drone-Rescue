@@ -2,6 +2,8 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.lang.Math;
+
 
 public class Map {
     int[][] creek_locations = new int[10][2];
@@ -37,5 +39,23 @@ public class Map {
         else {
             return false;
         }
+    }
+
+    public int[] closestCreek() {
+        double min_distance = 
+        Math.sqrt(Math.pow(y_emergsite - creek_locations[0][1], 2) + 
+        Math.pow(x_emergsite - creek_locations[0][0], 2)); 
+        //initially set distance to first creek in list
+        int[] current_closest = creek_locations[0];
+        for (int i = 1; i < creek_locations.length; i++ ) {
+            int a = y_emergsite - creek_locations[i][1];
+            int b = x_emergsite - creek_locations[i][0];
+            double c = Math.sqrt(Math.pow(a, 2) + Math.pow(b,2));
+            if (c < min_distance) {
+                min_distance = c;
+                current_closest = creek_locations[i];
+            }
+        }
+        return current_closest;
     }
 }
