@@ -19,7 +19,7 @@ public class Explorer implements IExplorerRaid {
     Drone drone;
     Map map = new Map();
     int range;
-    SpiralSearch search = new SpiralSearch();
+    SpiralSearch search;;
     Navigator navigator = Navigator.getInstance();
 
     @Override
@@ -34,8 +34,10 @@ public class Explorer implements IExplorerRaid {
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 
-        drone = new Drone(Compass.valueOf(direction));
         navigator.setDirection(Compass.valueOf(direction));
+        drone = new Drone(Compass.valueOf(direction));
+        search = new SpiralSearch(drone);
+
     }
 
     @Override

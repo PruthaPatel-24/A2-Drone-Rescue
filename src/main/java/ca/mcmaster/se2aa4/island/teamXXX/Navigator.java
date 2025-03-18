@@ -8,12 +8,11 @@ public class Navigator {
     private int y; 
     private int maxX;
     private int maxY; 
-    private Compass current_direction = Compass.N; //direction drone is facing
+    private Compass current_direction = Compass.E; //direction drone is facing
     private final Logger logger = LogManager.getLogger();
     private static Navigator instance = null;
 
     private Navigator() {
-
     }
 
     public static Navigator getInstance() {
@@ -24,7 +23,9 @@ public class Navigator {
     }
 
     public void setDirection(Compass starting_direction) {
+        logger.info("set current direction: " + current_direction +  " to start direction: " + starting_direction);
         current_direction = starting_direction;
+
     }
 
     public void setMaxX(int i){
@@ -54,7 +55,7 @@ public class Navigator {
         y = y + incr[m.ordinal()][current_direction.ordinal()][1];
         logger.info("New x: " + x + " New y: " + y);
 
-        current_direction = Compass.values()[(current_direction.ordinal() + m.ordinal()) % current_direction.values().length];
+        current_direction = Compass.values()[(current_direction.ordinal() + m.ordinal()) % Compass.values().length];
     }
 
     public int getCurrentX() {
