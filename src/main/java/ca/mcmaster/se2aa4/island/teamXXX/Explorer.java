@@ -4,6 +4,7 @@ import java.io.StringReader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -17,7 +18,7 @@ public class Explorer implements IExplorerRaid {
     Battery current_battery_life;
     boolean batteryIsLow = false;
     Drone drone;
-    Map map = new Map();
+    IslandMap map = new IslandMap();
     int range;
     SpiralSearch search;;
     Navigator navigator = Navigator.getInstance();
@@ -72,12 +73,17 @@ public class Explorer implements IExplorerRaid {
 
         if (response.getJSONObject("extras").has("creeks") && response.getJSONObject("extras").getJSONArray("creeks").length() > 0) {
             logger.info("Creek Found!!");
-            map.foundCreek();
+            JSONArray creeks = response.getJSONObject("extra").getJSONArray("sites");
+            String creek_id = creeks.getString(0);
+            map.foundCreek(creek_id);
         }
 
         if (response.getJSONObject("extras").has("sites") && response.getJSONObject("extras").getJSONArray("sites").length() > 0) {
             logger.info("Emergency Site Found!!");
+            JSONArray sites = response.getJSONObject("extra").getJSONArray("sites");
+            String site_id = sites.getString(0);
             map.foundEmergencySite();
+            map.setSiteID(site_id);
         }
 
         if (extraInfo.has("found")) {
@@ -101,8 +107,8 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        int[] closest_creek = map.closestCreek();
-        return "closest creek found to emergency site is at x: " + closest_creek[0] + " y: " + closest_creek[1]; //where is this getting returned to??
+        FinalReport report = new FinalReport(map);
+        return ""; //where is this getting returned to??
     }
 
 }
