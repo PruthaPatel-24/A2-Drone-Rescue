@@ -6,8 +6,8 @@ import org.apache.logging.log4j.Logger;
 public class SpiralSearch {
 
     private final Logger logger = LogManager.getLogger();
-    int current_step = 4;
-    int increment = 4;
+    int current_step = 2;
+    int increment = 2;
     int state = -1;
     int i = 0;
     int side = 1;
@@ -46,9 +46,9 @@ public class SpiralSearch {
         if (state == 0) {
             return d.echo(current_heading);
         } else if (state == 1) {
-            return d.fly();
-        } else if (state == 2) {
             return d.scan();
+        } else if (state == 2) {
+            return d.fly();
         } else if (state == 3) {
             current_heading = current_heading.previous();
             currentStateReached = false;
