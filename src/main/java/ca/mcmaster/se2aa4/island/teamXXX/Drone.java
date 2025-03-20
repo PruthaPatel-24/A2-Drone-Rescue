@@ -14,10 +14,11 @@ public class Drone implements DroneActions {
     JSONObject headingDecision = new JSONObject();
     JSONObject stopDecision = new JSONObject();
     JSONObject parameters = new JSONObject();
-    Navigator n;
-    EchoData echoDataLeft = new EchoData();
-    EchoData echoDataRight = new EchoData();
-    EchoData echoDataForward = new EchoData();
+    private Navigator n = new Navigator();
+    private EchoData echoDataLeft = new EchoData();
+    private EchoData echoDataRight = new EchoData();
+    private EchoData echoDataForward = new EchoData();
+    private Compass lastEcho; 
 
     public Drone(Compass heading) {
         this.heading = heading;
@@ -65,6 +66,7 @@ public class Drone implements DroneActions {
     }
 
     public String echo(Compass direction) {
+        lastEcho = direction;
         echoDecision.put("action", "echo");
         parameters.put("direction", direction.name());
         echoDecision.put("parameters", parameters);
@@ -115,12 +117,6 @@ public class Drone implements DroneActions {
     }
     //one prints statement in here to remove too 
     public void goToMiddle() {
-        int state = -1; 
-        //finds dimension 1 
-        
-        findDimension(state);
-        //find dimension 2
-        findDimension(state);
 
         if (heading == Compass.N || heading == Compass.S){
             fixY();
@@ -136,54 +132,93 @@ public class Drone implements DroneActions {
         System.out.println("okay at middle, my coordinates are, x: " + String.valueOf(n.getCurrentX()) + String.valueOf(n.getCurrentY()));
 
     }
+    public boolean skipTo7 = false; 
 
-    public void findDimension(int state){  
-        int dimension = 0;
-        Compass startHeading = heading;
-        state++; 
+    public boolean getSkipTo7(){
+        return skipTo7;
+    }
+    public void setSkipTo7(boolean b){
+        skipTo7 = b;
+    }
+
+    int dimension = 0;
+    Compass startHeading = heading;
+    public String findDimension(int state){  
+        
         if (state == 0){
-            echo(heading.previous()); //echo with left wing
+            logger.info (startHeading);
+            return echo(heading.previous()); //echo with left wing
         } 
         else if (state == 1){
-            echo(heading.next()); //echo with right wing
+            return echo(heading.next()); //echo with right wing
         }
-        else if (state == 2 || state == 3){
+        else if (state == 2 || state == 4){//bug: wil have same start direction for ifs --fix! 
             if (echoDataLeft.getLandDetected() == Terrain.OUT_OF_RANGE && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE){
                 dimension = echoDataLeft.getRange() + echoDataRight.getRange();
                 updateDimension(dimension, echoDataLeft.getRange(), Compass.values()[startHeading.ordinal()+1]);
-                state = 5; // 5 means completed dimension find! 
+                skipTo7 = true; // 6 means completed dimension find! 
+                logger.info("prutha stateeeeeeeee 2: should end cuz oor both sides");
+                return scan();
             }
             else if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.GROUND){
                 //can start spiral searching from here lowkey 
+                skipTo7 = true;
+                logger.info("don't need dimensions, just spiral lowkey");
+                return scan();
             }
             else{
                 if (state == 2){
                     if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() != Terrain.OUT_OF_RANGE) {
                         dimension += echoDataRight.getRange() + 2;
-                        turnLeft();
+                        echoDataForward.setLandDetected(Terrain.GROUND);
+                        return turnLeft();
                     } else if (echoDataLeft.getLandDetected() != Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE) {
                         dimension += echoDataLeft.getRange() + 2;
-                        turnRight();
+                        echoDataForward.setLandDetected(Terrain.GROUND);
+                        return turnRight();
                     }
-                    echoDataForward.setLandDetected(Terrain.GROUND);
                 }
-                if (state == 3){
+                else{ //state 4
                     if (echoDataForward.getLandDetected() == Terrain.OUT_OF_RANGE){ //stop moving forward 
-                        state = 5;
+                        startHeading=heading; 
+                        dimension = 0; 
+                        logger.info("current heading: ");
+                        logger.info (startHeading);
+                        skipTo7=true;
                     }
-                    echo(heading);
-                    dimension +=1; 
-                    /*
-                    while (echoDataForward.getLandDetected() != Terrain.OUT_OF_RANGE) { //KEEP MOVING FORWARD TILL FIND OTHER END 
-                        echo(heading);
-                        dimension += 1;
-                    }
-                    */
+                    logger.info("incrmenting forward because forward.Range = ");
+                    logger.info(echoDataForward.getRange());
+                    dimension +=1;
+                    return fly();
+                    
                 }
                 dimension += echoDataForward.getRange();
                 updateDimension(dimension, echoDataForward.getRange(), startHeading);
             }
+        } else if (state == 3){
+            logger.info("prutha state 3");
+            dimension += echoDataForward.getRange();
+            updateDimension(dimension, echoDataForward.getRange(), startHeading);
+            return scan();
         }
+        else if (state == 5){
+            logger.info("just flied, so now go to echo new dimension");
+            //need to go return to 4
+            return echo(heading);
+        }
+        else if (state == 6){
+            dimension += echoDataForward.getRange();
+            updateDimension(dimension, echoDataForward.getRange(), startHeading);
+            return scan();
+        }
+        else if (state == 7){
+            logger.info("got into here");
+            dimension = 0;
+            echoDataForward.setLandDetected(Terrain.GROUND);
+            //skipTo7 = false;
+        }
+        return scan();
+       
 
     }
     public void updateDimension(int totalDimension, int currLocation, Compass startHeading){
@@ -196,7 +231,7 @@ public class Drone implements DroneActions {
                 n.setX(totalDimension - currLocation);
             }
         }
-        else{ //setting y values 
+        else{ //setting y values start heading wast east or west 
             n.setMaxY(totalDimension);
             if (heading == Compass.E || heading == Compass.N){
                 n.setY(currLocation);
@@ -207,8 +242,8 @@ public class Drone implements DroneActions {
         }
     }
 
-    public void updateEchoData(int range, Terrain landDetected, Compass direction) {
-        Movement wing = heading.compassToMovement(direction); //paramater takes in which direction (n,e,s, w) you echoes
+    public void updateEchoData(int range, Terrain landDetected) {
+        Movement wing = heading.compassToMovement(lastEcho);
 
         if (wing == Movement.Left) {
             echoDataLeft.setRange(range);
@@ -220,6 +255,13 @@ public class Drone implements DroneActions {
             echoDataForward.setRange(range);
             echoDataForward.setLandDetected(landDetected);
         }
-        
+        logger.info("acknowedged results");
+    }
+
+    public int getMaxX(){
+        return n.getMaxX();
+    }
+    public int getMaxY(){
+        return n.getMaxY();
     }
 }

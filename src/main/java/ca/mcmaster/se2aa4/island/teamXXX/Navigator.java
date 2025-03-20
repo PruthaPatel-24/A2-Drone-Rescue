@@ -12,7 +12,7 @@ public class Navigator {
     private final Logger logger = LogManager.getLogger();
     private static Navigator instance = null;
 
-    private Navigator() {
+    public Navigator() {
     }
 
     public static Navigator getInstance() {
@@ -43,7 +43,7 @@ public class Navigator {
     public void setMaxY(int i){
         maxY = i;
     }
- 
+
     public Compass getC (){
         return current_direction;
     }
@@ -74,6 +74,14 @@ public class Navigator {
     public int getCurrentY() {
         logger.info("Current y: " + y);
         return y;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMaxY() {
+        return maxY;
     }
 
     public void goHome(){
