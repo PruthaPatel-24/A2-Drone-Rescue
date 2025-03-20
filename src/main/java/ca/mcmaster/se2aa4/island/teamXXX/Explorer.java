@@ -20,7 +20,7 @@ public class Explorer implements IExplorerRaid {
     Drone drone;
     IslandMap map = new IslandMap();
     int range;
-    SpiralSearch search;;
+    SpiralSearch search;
     Navigator navigator = Navigator.getInstance();
 
     @Override
@@ -73,14 +73,14 @@ public class Explorer implements IExplorerRaid {
 
         if (response.getJSONObject("extras").has("creeks") && response.getJSONObject("extras").getJSONArray("creeks").length() > 0) {
             logger.info("Creek Found!!");
-            JSONArray creeks = response.getJSONObject("extra").getJSONArray("sites");
+            JSONArray creeks = response.getJSONObject("extras").getJSONArray("creeks");
             String creek_id = creeks.getString(0);
             map.foundCreek(creek_id);
         }
 
         if (response.getJSONObject("extras").has("sites") && response.getJSONObject("extras").getJSONArray("sites").length() > 0) {
             logger.info("Emergency Site Found!!");
-            JSONArray sites = response.getJSONObject("extra").getJSONArray("sites");
+            JSONArray sites = response.getJSONObject("extras").getJSONArray("sites");
             String site_id = sites.getString(0);
             map.foundEmergencySite();
             map.setSiteID(site_id);
@@ -90,19 +90,10 @@ public class Explorer implements IExplorerRaid {
             String foundValue = extraInfo.getString("found");
             if ("OUT_OF_RANGE".equals(foundValue)) {
                 range = response.getJSONObject("extras").getInt("range");
-                /*
-                 * we can have another method in drone like checkEcho() or smth that will tell 
-                 * us to go in the other direction if the echo shows out of range 
-                 * within a certain distance
-                 * 
-                 * The function will probably take the range as a parameter
-                 */
                 logger.info("** the drone is out of range");
             }
-            //HELP NEEDED HERE: THIRD PARAMATER IS CURRENTLY HARD CODED -- HOW TO RETREIVE ECHO DIRECTION FROM DEICSION METHOD?
             //drone.updateEchoData(range, Terrain.valueOf(foundValue), Movement.Forward/*echoDirection (l, r, forward - of movement type)*/);
         }
-        //Sites and creeks are returned in an array with the site and creek ID which we might also need to store
     }
 
     @Override
