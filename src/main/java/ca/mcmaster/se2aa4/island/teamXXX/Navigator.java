@@ -22,7 +22,7 @@ public class Navigator {
     public void setMaxY(int i){
         maxY = i;
     }
- 
+
     public Compass getC (){
         return c;
     }
@@ -50,6 +50,14 @@ public class Navigator {
 
     public int getCurrentY() {
         return y;
+    }
+
+    public int getMaxX() {
+        return maxX;
+    }
+
+    public int getMaxY() {
+        return maxY;
     }
 
     public void goHome(){

@@ -21,6 +21,8 @@ public class Explorer implements IExplorerRaid {
     Map map = new Map();
     int range;
     SpiralSearch search = new SpiralSearch();
+    int state = -1;
+    int dimensions_found = 0; 
 
     @Override
     public void initialize(String s) {
@@ -41,37 +43,42 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision() {
         JSONObject decision = new JSONObject();
         JSONObject parameters = new JSONObject();
-        String echoDirection = "S";
         
-        if (!exploredEast && range == -1) {
-            decision.put("action", "scan");
-            //parameters.put("direction", "E");  // Start by exploring East
-        } 
-        else if (!exploredEast) {
-            x = range;
-            exploredEast = true;
-
-            decision.put("action", "echo");
-            parameters.put("direction", echoDirection); // Move South next
-        } 
-        else if (!exploredSouth) {
-            y = range;
-            exploredSouth = true;
-
-            decision.put("action", "stop");
-        } 
-        i++;
-        if (i < 500) {
-            logger.info("calling spiral search algorithm");
-            String searchValue = search.spiralSearchAlgorithm();
-            logger.info(searchValue);
-            return searchValue;
+        if (state == 6){
+            state = 3;
         }
-        else {
-            logger.info("stopping");
+        else if (drone.getSkipTo7()){
+            state = 7; 
+        }
+        if (state == 7 && dimensions_found <2){
+            logger.info("should've started repeating");
+            dimensions_found++;
+            drone.setSkipTo7(false);
+            state =-1;
+            return drone.scan();
+        }
+        else if (state<7 && dimensions_found < 2){
+            state++;
+            String executeCommand = drone.findDimension(state); 
+            logger.info("state");
+            logger.info(state);
+            logger.info("dimensions found");
+            logger.info(dimensions_found);
+            return executeCommand;
+        }
+        else if (dimensions_found >= 2) { // or state = 8
+            logger.info("my state number right now is");
+            logger.info(state);
+            logger.info("my width and length are: ");
+            logger.info("dimensions found");
+            logger.info(dimensions_found);
+            logger.info(drone.getMaxX());
+            logger.info(drone.getMaxY());
             decision.put("action", "stop");
             return decision.toString();
         }
+        decision.put("action", "stop");
+        return decision.toString();
     }
 
     @Override
@@ -92,12 +99,6 @@ public class Explorer implements IExplorerRaid {
         //if (batteryIsLow) {
         //    drone.stop();
         //}
-
-        if (response.getJSONObject("extras").has("range")) {
-            range = response.getJSONObject("extras").getInt("range");
-            logger.info("** Updated range value: {}", range);
-            
-        }
 
         if (response.getJSONObject("extras").has("creeks")) {
             logger.info("Creek Found!!");
@@ -122,7 +123,7 @@ public class Explorer implements IExplorerRaid {
                  */
                 logger.info("** the drone is out of range");
             }
-            drone.updateEchoData(range, Terrain.valueOf(foundValue), Compass.valueOf(response.getString("echoDirection")));
+            drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
         //Sites and creeks are returned in an array with the site and creek ID which we might also need to store
     }
