@@ -73,67 +73,16 @@ public class Drone implements DroneActions {
         return echoDecision.toString();
     }
 
-    public void fixX(){ //fix x-direction position to get to middle
-        int xMiddle = n.getCurrentX()/2;
-        // if too far left 
-        if (n.getCurrentX() < n.getCurrentX()/2){
-            if (heading != Compass.W){
-                turnLeft();
-                turnLeft();
-            }
-        }
-        // if too far right 
-        else if (n.getCurrentX() > n.getCurrentX()){
-            if (heading != Compass.E){
-                turnLeft();
-                turnLeft();
-            }
-        }
-        while (n.getCurrentX() != xMiddle){
-            fly();
-        }
-    }
-
-    public void fixY(){
-    //second fix y-direction position 
-        int yMiddle = n.getCurrentY()/2;
-        // if too far up
-        if (n.getCurrentY() < n.getCurrentY()/2){
-            if (heading != Compass.N){
-                turnLeft();
-                turnLeft();
-            }
-        }
-        // if too far down 
-        else if (n.getCurrentX() > n.getCurrentX()){
-            if (heading != Compass.S){
-                turnLeft();
-                turnLeft();
-            }
-        }
-        while (n.getCurrentY() != yMiddle){
-            fly();
-        }
-    }
-    //one prints statement in here to remove too 
-    public void goToMiddle() {
-
-        if (heading == Compass.N || heading == Compass.S){
-            fixY();
-            turnLeft();
-            fixX();
-        }
-        else{
-            fixX();
-            turnLeft();
-            fixY();
-        }
-        
-        System.out.println("okay at middle, my coordinates are, x: " + String.valueOf(n.getCurrentX()) + String.valueOf(n.getCurrentY()));
-
-    }
+    //variables for finding dimensions **********************
     public boolean skipTo7 = false; 
+    int dimension = 0;
+    Compass startHeading = heading;
 
+    //variables for going to middle *************************
+    public boolean inCorrectRow = false; 
+    public boolean inCorrectCol = false; 
+
+    //methods for finding dimensions******************
     public boolean getSkipTo7(){
         return skipTo7;
     }
@@ -141,8 +90,6 @@ public class Drone implements DroneActions {
         skipTo7 = b;
     }
 
-    int dimension = 0;
-    Compass startHeading = heading;
     public String findDimension(int state){  
         
         if (state == 0){
@@ -161,7 +108,8 @@ public class Drone implements DroneActions {
                 return scan();
             }
             else if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.GROUND){
-                //can start spiral searching from here lowkey 
+                inCorrectRow = true; 
+                inCorrectCol = true; 
                 skipTo7 = true;
                 logger.info("don't need dimensions, just spiral lowkey");
                 return scan();
@@ -264,4 +212,115 @@ public class Drone implements DroneActions {
     public int getMaxY(){
         return n.getMaxY();
     }
+
+    //methods for going to middle *************************
+    public String fixX(){ //fix x-direction position to get to middle
+        int xMiddle = n.getCurrentX()/2;
+        // if too far left 
+        if (n.getCurrentX() < xMiddle){
+            if (heading != Compass.E){
+                return turnLeft();
+            }
+            else if (n.getCurrentY() == xMiddle - 2){
+                inCorrectRow = true; 
+                return turnLeft();
+            }
+        }
+        // if too far right 
+        else if (n.getCurrentX() > xMiddle){
+            if (heading != Compass.W){
+                return turnLeft();
+            }
+            else if (n.getCurrentX() == xMiddle+2){
+                inCorrectRow = true;
+                return turnLeft();
+            }
+        }
+        return fly();
+    }
+
+    public String fixY(){ //should end with facing in x direction 
+    //second fix y-direction position 
+        int yMiddle = n.getMaxY()/2;
+        // if i am too far down
+        if (n.getCurrentY() > yMiddle){
+            if (heading != Compass.N){
+                return turnLeft(); //gonna happen twice 
+            }
+            else if (n.getCurrentY() == yMiddle + 2){
+                inCorrectRow = true; 
+                return turnLeft();
+            }
+        }
+        // if i am too far up 
+        else if (n.getCurrentY() < yMiddle){
+            if (heading != Compass.S){
+                return turnLeft(); //gonna happen twice 
+            }
+            else if (n.getCurrentY() == yMiddle - 2){
+                inCorrectRow = true; 
+                return turnLeft();
+            }
+        }
+        return fly();
+    }
+    //one prints statement in here to remove too 
+    int state = 10;
+    public String goToMiddle() {
+
+        if (state == 10){ //if first round, figure out which direction to fix first (y or x)
+            if (heading == Compass.N || heading == Compass.S){
+                state = 11; //fix y then fix x
+            }
+            else{ //fix x then y 
+                state = 14;
+            } 
+        }
+        if (state == 11){
+            if (inCorrectRow == true){
+                state = 12;
+            }
+            else return fixY();
+        }
+        if (state == 12){
+            if (inCorrectCol == true){
+                state = 15;
+            }
+            else return fixX();
+        }
+        if (state == 13){
+            if (inCorrectCol == true){
+                state = 14;
+            }
+            else return fixX();
+        }
+        if (state == 14){
+            if (inCorrectRow == true){
+                state = 15; 
+            }
+            else return fixY();
+        }
+        if (state == 15){
+            //start spiral search 
+            System.out.println("okay at middle, my coordinates are, x: " + String.valueOf(n.getCurrentX()) + String.valueOf(n.getCurrentY()));
+            return scan();
+        }
+        return scan(); //should never actually reach 
+        /*
+        if (heading == Compass.N || heading == Compass.S){
+            fixY();
+            turnLeft();
+            fixX();
+        }
+        else{
+            fixX();
+            turnLeft();
+            fixY();
+        }
+    */
+        
+
+    }
+   
+
 }

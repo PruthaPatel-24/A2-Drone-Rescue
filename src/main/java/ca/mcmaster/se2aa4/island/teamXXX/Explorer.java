@@ -59,7 +59,6 @@ public class Explorer implements IExplorerRaid {
             state = 7; 
         }
         if (state == 7 && dimensions_found <2){
-            logger.info("should've started repeating");
             dimensions_found++;
             drone.setSkipTo7(false);
             state =-1;
@@ -85,9 +84,13 @@ public class Explorer implements IExplorerRaid {
             decision.put("action", "stop");
             return decision.toString();
         }
+
         decision.put("action", "stop");
         return decision.toString();
+
+        //now go to middle!! 
     }
+
 
     @Override
     public void acknowledgeResults(String s) {
