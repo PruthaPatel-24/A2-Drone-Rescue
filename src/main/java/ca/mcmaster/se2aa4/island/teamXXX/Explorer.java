@@ -21,6 +21,8 @@ public class Explorer implements IExplorerRaid {
     Map map = new Map();
     int range;
     SpiralSearch search = new SpiralSearch();
+
+    //variables for finding dimensions of map 
     int state = -1;
     int dimensions_found = 0; 
 
@@ -51,7 +53,6 @@ public class Explorer implements IExplorerRaid {
             state = 7; 
         }
         if (state == 7 && dimensions_found <2){
-            logger.info("should've started repeating");
             dimensions_found++;
             drone.setSkipTo7(false);
             state =-1;
@@ -77,9 +78,13 @@ public class Explorer implements IExplorerRaid {
             decision.put("action", "stop");
             return decision.toString();
         }
+
         decision.put("action", "stop");
         return decision.toString();
+
+        //now go to middle!! 
     }
+
 
     @Override
     public void acknowledgeResults(String s) {

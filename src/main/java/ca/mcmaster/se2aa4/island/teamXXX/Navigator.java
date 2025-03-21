@@ -32,10 +32,6 @@ public class Navigator {
         {{-1,-1}, {+1, -1}, {+1, +1}, {-1, +1}}, // left turn 
         {{+1, -1}, {+1, +1}, {-1, +1}, {-1, -1}}  // right turn
     }; 
-    
-    public void moveTo(int x, int y){
-        //calls move to 
-    }
 
     public void move(Movement m){
         x = x + incr[m.ordinal()][c.ordinal()][0];
