@@ -8,7 +8,7 @@ public class Navigator {
     private int y = -1;
     private int maxX;
     private int maxY; 
-    private Compass current_direction = Compass.E; //direction drone is facing
+    private Compass currentHeading = Compass.E; //direction drone is facing
     private final Logger logger = LogManager.getLogger();
     private static Navigator instance = null;
 
@@ -23,8 +23,8 @@ public class Navigator {
     }
 
     public void setDirection(Compass starting_direction) {
-        logger.info("set current direction: " + current_direction +  " to start direction: " + starting_direction);
-        current_direction = starting_direction;
+        logger.info("set current direction: " + currentHeading +  " to start direction: " + starting_direction);
+        currentHeading = starting_direction;
 
     }
 
@@ -45,7 +45,7 @@ public class Navigator {
     }
 
     public Compass getC (){
-        return current_direction;
+        return currentHeading;
     }
 
     private int [][][] incr = {
@@ -55,11 +55,15 @@ public class Navigator {
     }; 
 
     public void move(Movement m){
-        x = x + incr[m.ordinal()][current_direction.ordinal()][0];
-        y = y + incr[m.ordinal()][current_direction.ordinal()][1];
-        logger.info("New x: " + x + " New y: " + y);
-
-        current_direction = Compass.values()[(current_direction.ordinal() + m.ordinal()) % Compass.values().length];
+        x = x + incr[m.ordinal()][currentHeading.ordinal()][0];
+        y = y + incr[m.ordinal()][currentHeading.ordinal()][1];
+        
+        if (m == Movement.Right){
+            currentHeading = currentHeading.next();
+        }
+        else if (m == Movement.Left){
+            currentHeading = currentHeading.previous();
+        }
     }
 
     public int getCurrentX() {
@@ -80,7 +84,8 @@ public class Navigator {
         return maxY;
     }
 
-    public void goHome(){
 
+    public void setC(Compass c){
+        this.currentHeading = c;
     }
 }

@@ -14,13 +14,13 @@ public enum Compass {
     }
 
     public Movement compassToMovement(Compass direction){
-        if (this.ordinal() - direction.ordinal() == 0){
+        if (this.ordinal() == direction.ordinal()){
             return Movement.Forward;
         }
-        else if ((this.ordinal() - direction.ordinal())%4 == - 3){
+        else if (this.previous().ordinal() == direction.ordinal()){
             return Movement.Left;
         }
-        else if ((this.ordinal() - direction.ordinal())%4 == -1){
+        else if (this.next().ordinal() == direction.ordinal()){
             return Movement.Right;
         }
         else{
