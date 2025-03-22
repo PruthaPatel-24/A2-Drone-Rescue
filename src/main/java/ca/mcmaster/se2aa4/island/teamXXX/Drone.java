@@ -3,6 +3,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
+import static ca.mcmaster.se2aa4.island.teamXXX.Terrain.*;
 
 public class Drone implements DroneActions {
 
@@ -65,14 +66,51 @@ public class Drone implements DroneActions {
         return stopDecision.toString();
     }
 
-    public String echo(Compass direction) {
-        lastEcho = direction;
+    public String echo(Compass direction) { //hello pls refactor spiral search to have moement takn in instead
         echoDecision.put("action", "echo");
         parameters.put("direction", direction.name());
         echoDecision.put("parameters", parameters);
         return echoDecision.toString();
     }
 
+    public String echo(Movement m) {
+        Compass headingToEcho = n.getC().movementToCompass(m);
+        echoDecision.put("action", "echo");
+        parameters.put("direction", headingToEcho.name());
+        echoDecision.put("parameters", parameters);
+        return echoDecision.toString();
+    }
+    
+    public void updateRunningDimensionEchoLeft(){
+        n.updateRunningDimension(echoDataLeft.range);
+    }
+    public void updateRunningDimensionEchoRight(){
+        n.updateRunningDimension(echoDataRight.range);
+    }
+    public void updateRunningDimensionEchoForward(){
+        n.updateRunningDimension(echoDataForward.range);
+    }
+    public void incrementRunningDimension(){
+        n.updateRunningDimension(1);
+    }
+
+    public void updateDimension(boolean mainAxis){
+        if (mainAxis){
+            n.setMainAxis();
+        }
+        else{
+            n.setPerpendicularAxis();
+        }
+        n.incrementDimensionsFound();
+    }
+    
+    public boolean bothDimensionsFound(){
+        return (n.getDimensionsFound() == 2);
+    }
+    boolean inCorrectCol = false;
+    boolean inCorrectRow= false;
+
+/*
     //variables for finding dimensions **********************
     public boolean skipTo7 = false; 
     int dimension = 0;
@@ -158,7 +196,7 @@ public class Drone implements DroneActions {
             }
         } else if (state == 3){
             logger.info("prutha state 3");
-            //**************couldn't rmbr hwy i have this either */
+            //**************couldn't rmbr hwy i have this either 
             //dimension += echoDataForward.getRange();
             //updateDimension(dimension, echoDataForward.getRange(), startHeading);
             logger.info(dimension);
@@ -184,7 +222,8 @@ public class Drone implements DroneActions {
        
 
     }
-    public void updateDimension(int totalDimension, int currLocation, Compass startHeading){
+    */
+   /* public void updateDimension(int totalDimension, int currLocation, Compass startHeading){
         if (startHeading == Compass.N || startHeading == Compass.S){
             n.setMaxX(totalDimension);
             if (heading == Compass.N || heading == Compass.W){
@@ -204,7 +243,7 @@ public class Drone implements DroneActions {
             }
         }
     }
-
+*/
     public void updateEchoData(int range, Terrain landDetected) {
         Movement wing = heading.compassToMovement(lastEcho);
         logger.info("upating echo data");
@@ -222,7 +261,32 @@ public class Drone implements DroneActions {
         }
         logger.info("acknowedged results");
     }
+    public FindDimensionState compareEchoData(){
+        if (echoDataLeft.getLandDetected() == GROUND && echoDataRight.getLandDetected() == GROUND){
+            return new BothGroundState();
+        }
+        else if(echoDataLeft.getLandDetected() == OUT_OF_RANGE && echoDataRight.getLandDetected() == OUT_OF_RANGE){
+            return new BothOutOfRangeState();
+        }
+        else if (echoDataLeft.getLandDetected() == GROUND && echoDataRight.getLandDetected() == OUT_OF_RANGE){
+            return new GroundOnlyOnLeftState();
+        }
+        else if(echoDataLeft.getLandDetected() == OUT_OF_RANGE && echoDataRight.getLandDetected() == GROUND){
+            return new GroundOnlyOnRightState();
+        }
+        else{
+            return null;
+        }
+    }
 
+    public FindDimensionState forwardRangeDecision (){
+        if (echoDataForward.landDetected == OUT_OF_RANGE){
+            return new IncrementForwardDoneState();
+        }
+        else{
+            return new IncrementForwardState();
+        }
+    }
     public int getMaxX(){
         return n.getMaxX();
     }

@@ -1,4 +1,5 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
+import static ca.mcmaster.se2aa4.island.teamXXX.Movement.*;
 
 public enum Compass {
     N, E, S, W;
@@ -25,6 +26,21 @@ public enum Compass {
         }
         else{
             return Movement.Backward; 
+        }
+    }
+
+    public Compass movementToCompass (Movement m){
+        if (m == Left){
+            return this.previous();
+        }
+        else if (m == Right){
+            return this.next();
+        }
+        else if (m == Forward){
+            return this;
+        }
+        else{
+            return this.next().next();
         }
     }
 

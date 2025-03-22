@@ -1,4 +1,5 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
+import static ca.mcmaster.se2aa4.island.teamXXX.Compass.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +29,43 @@ public class Navigator {
 
     }
 
+
+    //NEWWWWWW INTEGERS!! 
+    int dimensionsFound = 0; 
+    int runningDimension = 0;
+
+    public void incrementDimensionsFound (){
+        this.dimensionsFound++;
+    }
+    public void updateRunningDimension(int i){
+        this.runningDimension += i;
+    }
+    public int getDimensionsFound(){
+        return dimensionsFound;
+    }
+    public int getRunningDimension(){
+        return runningDimension;
+    }
+    public void setMainAxis(){
+        if (currentHeading == N || currentHeading == S){
+            maxY = runningDimension;
+        }
+        else{
+            maxX = runningDimension;
+        }
+        runningDimension = 0;
+    }
+    public void setPerpendicularAxis(){
+        if (currentHeading == E || currentHeading == W){
+            maxY = runningDimension;
+        }
+        else{
+            maxX = runningDimension;
+        }
+        runningDimension = 0;
+    }
+
+    /////////////////////////////
     public void setX(int i){
         x = i;
     }

@@ -1,16 +1,19 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
+import static ca.mcmaster.se2aa4.island.teamXXX.Movement.*;
+
 public class EchoForwardState implements FindDimensionState {
     
-    public String execute(Drone d, Compass heading){
-        //add echo right to the axis that i am NOT facing 
-        return d.echo(heading);
+    FindDimensionState nextState = new StartState();
+    public String execute(Drone d){
+        nextState = d.forwardRangeDecision();
+        return d.echo(Forward);
     }
 
-    public FindDimensionState nextState(int dimensionsFound){
+    public FindDimensionState nextState(){
+        return nextState;
         //IF echo forward terrain NOT oor 
         //dimension of axis i am facing ++  
-        return new IncrementForwardState();
         /*else
             dimension of axis i am facing += echoForwardRange
             dimensionsFound ++ (pass by reference)

@@ -20,10 +20,13 @@ public class Explorer implements IExplorerRaid {
     Drone drone;
     IslandMap map = new IslandMap();
     int range;
-    SpiralSearch search;
     Navigator navigator = Navigator.getInstance();
-    int state = -1;
-    int dimensions_found = 0; 
+    FindDimensionState FDState = new StartState();
+    SpiralSearch search = new SpiralSearch(drone);
+
+    //variables for finding dimensions of map 
+    //int state = -1;
+    //int dimensionsFound = 0; 
 
     @Override
     public void initialize(String s) {
@@ -43,15 +46,24 @@ public class Explorer implements IExplorerRaid {
 
     }
 
+    //variables NEWEST
+
+
     @Override
     public String takeDecision() {
+        
+        FDState.nextState();
+        return FDState.execute(drone);
+
+
+        
+        /*
         JSONObject decision = new JSONObject();
         if (!map.foundBoth()) {
             return search.spiralSearchAlgorithm();
         }
         logger.info("stopping");
         JSONObject parameters = new JSONObject();
-        
         if (state == 6){
             state = 3;
         }
@@ -87,12 +99,13 @@ public class Explorer implements IExplorerRaid {
             //decision.put("action", "stop");
             //return decision.toString();
         }
+            */
 
         //decision.put("action", "stop");
         //return decision.toString();
 
         //now go to middle!! 
-        return drone.goToMiddle();
+        //return drone.goToMiddle();
     }
 
 
@@ -136,7 +149,6 @@ public class Explorer implements IExplorerRaid {
                 range = response.getJSONObject("extras").getInt("range");
                 logger.info("** the drone is out of range");
             }
-            logger.info("immmm updating this! and my state is: " + state);
             drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
     }
