@@ -1,10 +1,10 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-import java.lang.Math;
 import java.util.HashMap;
 import java.util.Map;
 
 public class IslandMap {
+
     int[] site_location = new int[2];
     Map<String, int[]> creek_locations = new HashMap<>();
     String site_id;
@@ -27,8 +27,7 @@ public class IslandMap {
     public Boolean foundBoth() {
         if (creek_found == true && emergency_site_found == true) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -47,7 +46,7 @@ public class IslandMap {
                 creek_id = creek;
             }
         }
-        return "The closest creek is " + creek_id + " --> x: " + x_creek + "y: " + y_creek;
+        return "The closest creek to the emergency site is " + creek_id + " --> x: " + x_creek + " y: " + y_creek;
     }
 
     public Map getFoundCreeks() {

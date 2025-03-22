@@ -99,7 +99,9 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String deliverFinalReport() {
         FinalReport report = new FinalReport(map);
-        return ""; //where is this getting returned to??
+        String reportClosestCreek = report.finalReport();
+        logger.info("Generated final report: {}", reportClosestCreek);
+        return reportClosestCreek;
     }
 
 }
