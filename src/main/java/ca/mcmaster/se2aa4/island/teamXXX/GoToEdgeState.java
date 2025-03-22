@@ -1,13 +1,13 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-public class FinalDimensionFindState implements FindDimensionState {
+public class GoToEdgeState implements FindDimensionState {
     
     public String execute(Drone d){
-        return d.stop(); 
+        return d.fly();
     }
 
     public FindDimensionState nextState(){
-        return new StartState();
+        return new LookForEdgeState();
     }
 
 }

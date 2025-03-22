@@ -52,10 +52,8 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         
-        FDState.nextState();
+        FDState = FDState.nextState();
         return FDState.execute(drone);
-
-
         
         /*
         JSONObject decision = new JSONObject();
@@ -145,10 +143,7 @@ public class Explorer implements IExplorerRaid {
 
         if (extraInfo.has("found")) {
             String foundValue = extraInfo.getString("found");
-            if ("OUT_OF_RANGE".equals(foundValue)) {
-                range = response.getJSONObject("extras").getInt("range");
-                logger.info("** the drone is out of range");
-            }
+            range = response.getJSONObject("extras").getInt("range");
             drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
     }
