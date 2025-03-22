@@ -1,7 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
 public class EchoData{
-    Terrain landDetected; 
+    Terrain landDetected;
     int range; 
         
     public Terrain getLandDetected(){

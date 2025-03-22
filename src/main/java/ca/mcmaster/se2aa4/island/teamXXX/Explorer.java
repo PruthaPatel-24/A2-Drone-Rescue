@@ -73,7 +73,7 @@ public class Explorer implements IExplorerRaid {
             logger.info(dimensions_found);
             return executeCommand;
         }
-        else if (dimensions_found >= 2) { // or state = 8
+        else if (dimensions_found == 2) { // or state = 8
             logger.info("my state number right now is");
             logger.info(state);
             logger.info("my width and length are: ");
@@ -81,14 +81,18 @@ public class Explorer implements IExplorerRaid {
             logger.info(dimensions_found);
             logger.info(drone.getMaxX());
             logger.info(drone.getMaxY());
-            decision.put("action", "stop");
-            return decision.toString();
+            dimensions_found++;
+            return drone.stop();
+            
+            //decision.put("action", "stop");
+            //return decision.toString();
         }
 
-        decision.put("action", "stop");
-        return decision.toString();
+        //decision.put("action", "stop");
+        //return decision.toString();
 
         //now go to middle!! 
+        return drone.goToMiddle();
     }
 
 
@@ -132,6 +136,7 @@ public class Explorer implements IExplorerRaid {
                 range = response.getJSONObject("extras").getInt("range");
                 logger.info("** the drone is out of range");
             }
+            logger.info("immmm updating this! and my state is: " + state);
             drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
     }

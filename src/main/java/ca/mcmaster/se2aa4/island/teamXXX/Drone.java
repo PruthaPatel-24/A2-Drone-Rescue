@@ -81,6 +81,7 @@ public class Drone implements DroneActions {
     //variables for going to middle *************************
     public boolean inCorrectRow = false; 
     public boolean inCorrectCol = false; 
+    int dimensionStart = 0;
 
     //methods for finding dimensions******************
     public boolean getSkipTo7(){
@@ -103,7 +104,7 @@ public class Drone implements DroneActions {
             if (echoDataLeft.getLandDetected() == Terrain.OUT_OF_RANGE && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE){
                 dimension = echoDataLeft.getRange() + echoDataRight.getRange();
                 updateDimension(dimension, echoDataLeft.getRange(), Compass.values()[startHeading.ordinal()+1]);
-                skipTo7 = true; // 6 means completed dimension find! 
+                skipTo7 = true; // completed dimension find! 
                 logger.info("prutha stateeeeeeeee 2: should end cuz oor both sides");
                 return scan();
             }
@@ -116,12 +117,18 @@ public class Drone implements DroneActions {
             }
             else{
                 if (state == 2){
-                    if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() != Terrain.OUT_OF_RANGE) {
+                    logger.info("got into here because left and right wing echods were different.");
+                    logger.info("left wing was: " + String.valueOf(echoDataLeft.getLandDetected()) + "right wing was: " + String.valueOf(echoDataRight.getLandDetected()));
+                    if (echoDataLeft.getLandDetected() == Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE) {
+                        logger.info("adds to dimension: " + String.valueOf(echoDataRight.getRange()));
                         dimension += echoDataRight.getRange() + 2;
+                        dimensionStart = dimension;
                         echoDataForward.setLandDetected(Terrain.GROUND);
                         return turnLeft();
-                    } else if (echoDataLeft.getLandDetected() != Terrain.GROUND && echoDataRight.getLandDetected() == Terrain.OUT_OF_RANGE) {
+                    } else if (echoDataLeft.getLandDetected() == Terrain.OUT_OF_RANGE && echoDataRight.getLandDetected() == Terrain.GROUND) {
+                        logger.info("adds to dimension: " + String.valueOf(echoDataLeft.getRange()));
                         dimension += echoDataLeft.getRange() + 2;
+                        dimensionStart = dimension;
                         echoDataForward.setLandDetected(Terrain.GROUND);
                         return turnRight();
                     }
@@ -129,24 +136,32 @@ public class Drone implements DroneActions {
                 else{ //state 4
                     if (echoDataForward.getLandDetected() == Terrain.OUT_OF_RANGE){ //stop moving forward 
                         startHeading=heading; 
+                        //once it's found out of range , add steps till out of range  
+                        dimension += echoDataForward.getRange();
+                        logger.info("last echo" + echoDataForward.getRange());
+                        updateDimension(dimension, echoDataForward.getRange(), startHeading);
                         dimension = 0; 
                         logger.info("current heading: ");
                         logger.info (startHeading);
+                        logger.info("start thin was: " + dimensionStart);
                         skipTo7=true;
                     }
-                    logger.info("incrmenting forward because forward.Range = ");
-                    logger.info(echoDataForward.getRange());
+                    logger.info("incrmenting forward because ground in front is ground ");
+                    logger.info(dimension);
                     dimension +=1;
                     return fly();
                     
                 }
-                dimension += echoDataForward.getRange();
-                updateDimension(dimension, echoDataForward.getRange(), startHeading);
+                //prutha--couldnt rmbr why this was here and got rid of it (doesnt seem to change anything)
+                //dimension += echoDataForward.getRange(); [prutha gort rid of this not rlly sure why]
+                //updateDimension(dimension, echoDataForward.getRange(), startHeading);
             }
         } else if (state == 3){
             logger.info("prutha state 3");
-            dimension += echoDataForward.getRange();
-            updateDimension(dimension, echoDataForward.getRange(), startHeading);
+            //**************couldn't rmbr hwy i have this either */
+            //dimension += echoDataForward.getRange();
+            //updateDimension(dimension, echoDataForward.getRange(), startHeading);
+            logger.info(dimension);
             return scan();
         }
         else if (state == 5){
@@ -155,7 +170,7 @@ public class Drone implements DroneActions {
             return echo(heading);
         }
         else if (state == 6){
-            dimension += echoDataForward.getRange();
+            //dimension += echoDataForward.getRange();
             updateDimension(dimension, echoDataForward.getRange(), startHeading);
             return scan();
         }
@@ -192,11 +207,13 @@ public class Drone implements DroneActions {
 
     public void updateEchoData(int range, Terrain landDetected) {
         Movement wing = heading.compassToMovement(lastEcho);
-
+        logger.info("upating echo data");
         if (wing == Movement.Left) {
+            logger.info("left wing");
             echoDataLeft.setRange(range);
             echoDataLeft.setLandDetected(landDetected);
         } else if (wing == Movement.Right) {
+            logger.info("right wing");
             echoDataRight.setRange(range);
             echoDataRight.setLandDetected(landDetected);
         } else if (wing == Movement.Forward) {
@@ -215,59 +232,81 @@ public class Drone implements DroneActions {
 
     //methods for going to middle *************************
     public String fixX(){ //fix x-direction position to get to middle
-        int xMiddle = n.getCurrentX()/2;
+        logger.info("is getting into fix x");
+        int xMiddle = n.getMaxX()/2;
         // if too far left 
         if (n.getCurrentX() < xMiddle){
+            logger.info(" need to get to higher x coordinates");
             if (heading != Compass.E){
                 return turnLeft();
             }
             else if (n.getCurrentY() == xMiddle - 2){
-                inCorrectRow = true; 
+                inCorrectCol = true; 
+                logger.info("found correct x");
                 return turnLeft();
             }
         }
         // if too far right 
         else if (n.getCurrentX() > xMiddle){
+            logger.info(" need to get to lower x coordinates");
             if (heading != Compass.W){
                 return turnLeft();
             }
             else if (n.getCurrentX() == xMiddle+2){
-                inCorrectRow = true;
+                inCorrectCol = true;
+                logger.info("found correct x");
                 return turnLeft();
             }
         }
+        else if (n.getCurrentX() == xMiddle){
+            inCorrectCol = true;
+        }
+        logger.info("flying: " + String.valueOf(heading));
         return fly();
     }
 
     public String fixY(){ //should end with facing in x direction 
     //second fix y-direction position 
+        logger.info("is getting into fix y");
         int yMiddle = n.getMaxY()/2;
         // if i am too far down
         if (n.getCurrentY() > yMiddle){
+            logger.info(" need to get to lower y coordinates");
             if (heading != Compass.N){
+                logger.info("turned to face north");
                 return turnLeft(); //gonna happen twice 
             }
             else if (n.getCurrentY() == yMiddle + 2){
                 inCorrectRow = true; 
+                logger.info("found correct y");
                 return turnLeft();
             }
         }
         // if i am too far up 
         else if (n.getCurrentY() < yMiddle){
+            logger.info("i'm too far up, need to get to larger coordinates");
             if (heading != Compass.S){
+                logger.info("turned to face south");
                 return turnLeft(); //gonna happen twice 
             }
             else if (n.getCurrentY() == yMiddle - 2){
                 inCorrectRow = true; 
+                logger.info("found correct y");
                 return turnLeft();
             }
         }
+        else if (n.getCurrentY() == yMiddle){
+            inCorrectRow = true;
+        }
+        logger.info("flying: " + String.valueOf(heading));
         return fly();
     }
     //one prints statement in here to remove too 
     int state = 10;
     public String goToMiddle() {
-
+        logger.info("max x: " + String.valueOf(n.getMaxX() + " max y: " + String.valueOf(n.getMaxY())));
+        logger.info("current x: " + String.valueOf(n.getCurrentX()) + ". current y: " + String.valueOf(n.getCurrentY()));
+        logger.info(state);
         if (state == 10){ //if first round, figure out which direction to fix first (y or x)
             if (heading == Compass.N || heading == Compass.S){
                 state = 11; //fix y then fix x
@@ -284,9 +323,15 @@ public class Drone implements DroneActions {
         }
         if (state == 12){
             if (inCorrectCol == true){
+                logger.info("about to go to 15");
                 state = 15;
             }
-            else return fixX();
+            
+            else{
+                logger.info("not going into 15");
+                return fixX();
+            }
+            
         }
         if (state == 13){
             if (inCorrectCol == true){
@@ -302,8 +347,10 @@ public class Drone implements DroneActions {
         }
         if (state == 15){
             //start spiral search 
-            System.out.println("okay at middle, my coordinates are, x: " + String.valueOf(n.getCurrentX()) + String.valueOf(n.getCurrentY()));
-            return scan();
+            logger.info("okay at middle, my coordinates are, x: ");
+            logger.info(n.getCurrentX());
+            logger.info(n.getCurrentY());
+            return stop();
         }
         return scan(); //should never actually reach 
         /*
