@@ -3,7 +3,7 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import org.json.JSONObject;
 
 public class EchoData{
-    Terrain landDetected; 
+    Terrain landDetected;
     int range; 
         
     public Terrain getLandDetected(){

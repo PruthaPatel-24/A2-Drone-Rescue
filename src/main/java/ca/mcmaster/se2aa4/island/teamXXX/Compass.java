@@ -17,10 +17,10 @@ public enum Compass {
         if (this.ordinal() - direction.ordinal() == 0){
             return Movement.Forward;
         }
-        else if (this.ordinal() - direction.ordinal() == - 2){
+        else if ((this.ordinal() - direction.ordinal())%4 == - 3){
             return Movement.Left;
         }
-        else if (this.ordinal() - direction.ordinal() == -1){
+        else if ((this.ordinal() - direction.ordinal())%4 == -1){
             return Movement.Right;
         }
         else{
