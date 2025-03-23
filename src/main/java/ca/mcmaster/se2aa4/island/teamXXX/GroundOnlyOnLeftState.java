@@ -11,7 +11,7 @@ public class GroundOnlyOnLeftState implements FindDimensionState {
     }
 
     public FindDimensionState nextState(){
-        return new IncrementForwardState();
+        return new EchoForwardState();
     }
 
 }

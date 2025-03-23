@@ -9,11 +9,15 @@ public class Navigator {
     private int y = -1;
     private int maxX;
     private int maxY; 
-    private Compass currentHeading = Compass.E; //direction drone is facing
+    private Compass currentHeading = Compass.N; //direction drone is facing
     private final Logger logger = LogManager.getLogger();
     private static Navigator instance = null;
 
-    public Navigator() {
+    private Navigator (){
+    }
+
+    public void setHeading(Compass heading){
+        currentHeading = heading;
     }
 
     public static Navigator getInstance() {
@@ -28,8 +32,6 @@ public class Navigator {
         currentHeading = starting_direction;
 
     }
-
-
     //NEWWWWWW INTEGERS!! 
     int dimensionsFound = 0; 
     int runningDimension = 0;

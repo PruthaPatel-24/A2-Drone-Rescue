@@ -20,7 +20,7 @@ public class Explorer implements IExplorerRaid {
     Drone drone;
     IslandMap map = new IslandMap();
     int range;
-    Navigator navigator = Navigator.getInstance();
+    Navigator n = Navigator.getInstance();
     FindDimensionState FDState = new StartState();
     SpiralSearch search = new SpiralSearch(drone);
 
@@ -40,8 +40,8 @@ public class Explorer implements IExplorerRaid {
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 
-        navigator.setDirection(Compass.valueOf(direction));
-        drone = new Drone(Compass.valueOf(direction));
+        drone = new Drone();
+        n.setHeading(Compass.valueOf(direction));
         search = new SpiralSearch(drone);
 
     }
@@ -53,6 +53,7 @@ public class Explorer implements IExplorerRaid {
     public String takeDecision() {
         
         FDState = FDState.nextState();
+        logger.info("my state is: " + FDState.getClass().getName());
         return FDState.execute(drone);
         
         /*
@@ -113,7 +114,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Response received:\n" + response.toString(2));
 
         Integer cost = response.getInt("cost");
-        logger.info("The cost of the action was {}", cost);
+        //logger.info("The cost of the action was {}", cost);
 
         String status = response.getString("status");
         logger.info("The status of the drone is {}", status);
@@ -144,6 +145,7 @@ public class Explorer implements IExplorerRaid {
         if (extraInfo.has("found")) {
             String foundValue = extraInfo.getString("found");
             range = response.getJSONObject("extras").getInt("range");
+            logger.info("updating");
             drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
     }

@@ -12,7 +12,7 @@ public class BothOutOfRangeState implements FindDimensionState {
         d.updateDimension(false);
 
         if (d.bothDimensionsFound()){
-            nextState = new FinalDimensionFindState();
+            nextState = new FinalDimensionFindState(); //first state of middle
         }
         else{
             nextState = new StartState();

@@ -4,10 +4,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import static ca.mcmaster.se2aa4.island.teamXXX.Terrain.*;
+import static ca.mcmaster.se2aa4.island.teamXXX.Compass.*;
 
 public class Drone implements DroneActions {
 
-    private Compass heading;
+    //private Compass heading;
     private final Logger logger = LogManager.getLogger();
     JSONObject echoDecision = new JSONObject();
     JSONObject scanDecision = new JSONObject();
@@ -15,16 +16,11 @@ public class Drone implements DroneActions {
     JSONObject headingDecision = new JSONObject();
     JSONObject stopDecision = new JSONObject();
     JSONObject parameters = new JSONObject();
-    private Navigator n = new Navigator();
+    private Navigator n = Navigator.getInstance();
     private EchoData echoDataLeft = new EchoData();
     private EchoData echoDataRight = new EchoData();
     private EchoData echoDataForward = new EchoData();
     private Compass lastEcho; 
-
-    public Drone(Compass heading) {
-        this.heading = heading;
-        this.n = Navigator.getInstance();
-    }
 
     @Override
     public String fly() {
@@ -36,9 +32,9 @@ public class Drone implements DroneActions {
     @Override
     public String turnLeft() {
         n.move(Movement.Left);
-        heading = heading.previous();
+        //heading = heading.previous();
         headingDecision.put("action", "heading");
-        parameters.put("direction", heading.name());
+        parameters.put("direction", n.getC().name());
         headingDecision.put("parameters", parameters);
         return headingDecision.toString();
     }
@@ -46,9 +42,9 @@ public class Drone implements DroneActions {
     @Override
     public String turnRight() {
         n.move(Movement.Right);
-        heading = heading.next();
+        //heading = heading.next();
         headingDecision.put("action", "heading");
-        parameters.put("direction", heading.name());
+        parameters.put("direction", n.getC().name());
         headingDecision.put("parameters", parameters);
         return headingDecision.toString();
     }
@@ -75,6 +71,8 @@ public class Drone implements DroneActions {
 
     public String echo(Movement m) {
         Compass headingToEcho = n.getC().movementToCompass(m);
+        lastEcho = headingToEcho;
+        logger.info("echo gave back: " + headingToEcho);
         echoDecision.put("action", "echo");
         parameters.put("direction", headingToEcho.name());
         echoDecision.put("parameters", parameters);
@@ -83,24 +81,57 @@ public class Drone implements DroneActions {
     
     public void updateRunningDimensionEchoLeft(){
         n.updateRunningDimension(echoDataLeft.range);
+        logger.info("running dimension is " + n.getRunningDimension());
     }
     public void updateRunningDimensionEchoRight(){
         n.updateRunningDimension(echoDataRight.range);
+        logger.info("running dimension is " + n.getRunningDimension());
     }
     public void updateRunningDimensionEchoForward(){
         n.updateRunningDimension(echoDataForward.range);
+        logger.info("running dimension is " + n.getRunningDimension());
     }
     public void incrementRunningDimension(){
         n.updateRunningDimension(1);
+        logger.info("running dimension is " + n.getRunningDimension());
     }
 
     public void updateDimension(boolean mainAxis){
         if (mainAxis){
             n.setMainAxis();
+            if (n.getC() == N){
+                n.setY(echoDataForward.range);
+            }
+            else if (n.getC() == E){
+                n.setY(n.getMaxX() - echoDataForward.range);
+            }
+            else if (n.getC() == S){
+                n.setX(n.getMaxY() - echoDataForward.range);
+            }
+            else if (n.getC() == W){
+                n.setX(echoDataForward.range);
+            }
         }
         else{
+            if (n.getC() == N){
+                n.setX(echoDataLeft.range);
+            }
+            else if (n.getC() == E){
+                n.setY(echoDataLeft.range);
+            }
+            else if (n.getC() == S){
+                n.setX(echoDataRight.range);
+            }
+            else if (n.getC() == W){
+                n.setY(echoDataRight.range);
+            }
+
             n.setPerpendicularAxis();
         }
+        echoDataForward.setLandDetected(null);
+        echoDataLeft.setLandDetected(null);
+        echoDataLeft.setLandDetected(null);
+        
         n.incrementDimensionsFound();
     }
     
@@ -121,7 +152,7 @@ public class Drone implements DroneActions {
 
 
     public void updateEchoData(int range, Terrain landDetected) {
-        Movement wing = heading.compassToMovement(lastEcho);
+        Movement wing = n.getC().compassToMovement(lastEcho);
         logger.info("upating echo data");
         if (wing == Movement.Left) {
             logger.info("left wing");
@@ -155,20 +186,20 @@ public class Drone implements DroneActions {
         }
     }
 
-    public FindDimensionState forwardRangeDecision (){
+    public boolean forwardRangeDecision (){
         if (echoDataForward.landDetected == OUT_OF_RANGE){
-            return new IncrementForwardDoneState();
+            return false;
         }
         else{
-            return new IncrementForwardState();
+            return true;
         }
     }
-    public FindDimensionState edgeFoundDecision (){
+    public boolean edgeFoundDecision (){
         if (echoDataForward.landDetected == OUT_OF_RANGE){
-            return new UTurnPartOneState();
+            return false;
         }
         else{
-            return new GoToEdgeState();
+            return true;
         }
     }
     public int getMaxX(){

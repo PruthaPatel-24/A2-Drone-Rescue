@@ -3,15 +3,17 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import static ca.mcmaster.se2aa4.island.teamXXX.Movement.*;
 
 public class EchoForwardState implements FindDimensionState {
-    
+
+
     FindDimensionState nextState = new StartState();
     public String execute(Drone d){
-        nextState = d.forwardRangeDecision();
+        ///nextState = d.forwardRangeDecision(); -- old
         return d.echo(Forward);
     }
 
     public FindDimensionState nextState(){
-        return nextState;
+        //return nextState; --old 
+        return new IncrementForwardState();
         //IF echo forward terrain NOT oor 
         //dimension of axis i am facing ++  
         /*else
