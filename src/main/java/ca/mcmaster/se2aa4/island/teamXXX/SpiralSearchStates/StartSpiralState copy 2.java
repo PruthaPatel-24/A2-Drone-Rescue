@@ -11,6 +11,6 @@ public class StartSpiralState implements SpiralState {
 
     @Override
     public SpiralState nextState() {
-        return new FlyForward();
+        return null;
     }
 }

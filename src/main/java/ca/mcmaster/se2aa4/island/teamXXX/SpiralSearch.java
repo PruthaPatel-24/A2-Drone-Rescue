@@ -13,7 +13,6 @@ public class SpiralSearch {
     int side = 1;
     boolean currentStateReached = false;
 
-    Navigator n = Navigator.getInstance();
     Compass current_heading;
     Drone d;
 
