@@ -11,10 +11,10 @@ public class FinalGTMState implements GoToMiddleState {
         int middleY = d.getMaxY()/2; //doon't need this variabele after
         logger.info("ccccurrent x: " + d.getCurrentX() + "middle x: " + middleX);
         logger.info("ccccurrent y: " + d.getCurrentY() + "middle y: " + middleY);
-        return d.stop();
+        return d.scan();
     }
     public GoToMiddleState nextState(){
-        return new StartGTMState();
+        return null;
     }
 }
 

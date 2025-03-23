@@ -11,13 +11,15 @@ import org.json.JSONTokener;
 import eu.ace_design.island.bot.IExplorerRaid;
 import ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates.*;
 import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.*;
+import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.SpiralState;
+import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.StartSpiralState;
+
 import static ca.mcmaster.se2aa4.island.teamXXX.Machine.*;
 
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-
-    int i = 0;
+    
     Battery current_battery_life;
     boolean batteryIsLow = false;
     Drone drone;
@@ -30,8 +32,8 @@ public class Explorer implements IExplorerRaid {
     //int dimensionsFound = 0; 
     private FindDimensionState FDState = new StartFDState();
     private GoToMiddleState GTMState = new StartGTMState();
-    private Machine currentMachine = FIND_DIMENSION;
-    
+    private SpiralState SpiralState = new StartSpiralState();
+    private Machine currentMachine = FIND_DIMENSION;    
 
     @Override
     public void initialize(String s) {
@@ -53,73 +55,40 @@ public class Explorer implements IExplorerRaid {
     
     @Override
     public String takeDecision() {
-        
-        FDState = FDState.nextState();
-        logger.info("my state is: " + FDState.getClass().getName());
-        return FDState.execute(drone);
-    }
-        
-        /*
-        JSONObject decision = new JSONObject();
-        if (!map.foundBoth()) {
-            return search.spiralSearchAlgorithm();
-        }
-        logger.info("stopping");
-        JSONObject parameters = new JSONObject();
-        if (state == 6){
-            state = 3;
-        }
-        else if (drone.getSkipTo7()){
-            state = 7; 
-        }
-        if (state == 7 && dimensions_found <2){
-            dimensions_found++;
-            drone.setSkipTo7(false);
-            state =-1;
-            return drone.scan();
-        }
-        else if (state<7 && dimensions_found < 2){
-            state++;
-            String executeCommand = drone.findDimension(state); 
-            logger.info("state");
-            logger.info(state);
-            logger.info("dimensions found");
-            logger.info(dimensions_found);
-            return executeCommand;
-        }
-        else if (dimensions_found == 2) { // or state = 8
-            logger.info("my state number right now is");
-            logger.info(state);
-            logger.info("my width and length are: ");
-            logger.info("dimensions found");
-            logger.info(dimensions_found);
-            logger.info(drone.getMaxX());
-            logger.info(drone.getMaxY());
-            dimensions_found++;
-            return drone.stop();
+        logger.info("my currnet machine: " + currentMachine);
+        if (currentMachine == FIND_DIMENSION){
+            FDState = FDState.nextState();
+            if (FDState == null){
+                currentMachine = currentMachine.next();
+                return drone.scan();
+            }
+            else return FDState.execute(drone);
             
         }
         else if (currentMachine == GO_TO_MIDDLE){
-            logger.info("in go to middle");
             GTMState = GTMState.nextState();
             if (GTMState == null){
                 currentMachine = currentMachine.next();
-                return null;
+                return drone.scan();
             }
             
             else{
-                logger.info("going to execute middle");
                 return GTMState.execute(drone);
             }
             
         } 
-        logger.info("now start spiral search");
-        
-        return drone.stop();
+        else{
+            SpiralState = SpiralState.nextState();
+            if (SpiralState == null){
+                return drone.stop();
+            }
+            
+            else{
+                return SpiralState.execute(drone);
+            }
+        }        
 
     }
-
-    */
 
     @Override
     public void acknowledgeResults(String s) {
