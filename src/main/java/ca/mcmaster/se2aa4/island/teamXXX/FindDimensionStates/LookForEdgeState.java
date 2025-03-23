@@ -1,6 +1,8 @@
-package ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
 
 import static ca.mcmaster.se2aa4.island.teamXXX.Movement.*;
+
+import ca.mcmaster.se2aa4.island.teamXXX.Drone;
 
 public class LookForEdgeState implements FindDimensionState {
     

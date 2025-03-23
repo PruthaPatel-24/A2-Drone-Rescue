@@ -1,7 +1,9 @@
-package ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
+
+import ca.mcmaster.se2aa4.island.teamXXX.Drone;
 
 public class IncrementForwardDoneState implements FindDimensionState {
-    FindDimensionState nextState = new StartState();
+    FindDimensionState nextState = new StartFDState();
     public String execute(Drone d){
         d.updateRunningDimensionEchoForward();
         d.updateDimension(true); 
@@ -10,7 +12,7 @@ public class IncrementForwardDoneState implements FindDimensionState {
             nextState = new FinalDimensionFindState(); //first state of middle machine! 
         }
         else{
-            nextState = new StartState();
+            nextState = new StartFDState();
         }
         return d.scan();
     }

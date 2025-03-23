@@ -3,6 +3,9 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
+
+import ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates.*;
+
 import static ca.mcmaster.se2aa4.island.teamXXX.Terrain.*;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.*;
 
@@ -100,39 +103,43 @@ public class Drone implements DroneActions {
         if (mainAxis){
             n.setMainAxis();
             if (n.getC() == N){
-                n.setY(echoDataForward.range);
+                n.setY(echoDataForward.range +1);
             }
             else if (n.getC() == E){
-                n.setY(n.getMaxX() - echoDataForward.range);
+                n.setX(n.getMaxX() - echoDataForward.range);
             }
             else if (n.getC() == S){
-                n.setX(n.getMaxY() - echoDataForward.range);
+                n.setY(n.getMaxY() - echoDataForward.range);
             }
             else if (n.getC() == W){
-                n.setX(echoDataForward.range);
+                n.setX(echoDataForward.range+1);
             }
         }
         else{
             if (n.getC() == N){
-                n.setX(echoDataLeft.range);
+                n.setX(echoDataLeft.range+1);
             }
             else if (n.getC() == E){
-                n.setY(echoDataLeft.range);
+                n.setY(echoDataLeft.range+1);
             }
             else if (n.getC() == S){
-                n.setX(echoDataRight.range);
+                n.setX(echoDataRight.range+1);
             }
             else if (n.getC() == W){
-                n.setY(echoDataRight.range);
+                n.setY(echoDataRight.range+1);
             }
 
             n.setPerpendicularAxis();
         }
+        refreshEchoData();
+        
+        n.incrementDimensionsFound();
+    }
+
+    public void refreshEchoData(){
         echoDataForward.setLandDetected(null);
         echoDataLeft.setLandDetected(null);
         echoDataLeft.setLandDetected(null);
-        
-        n.incrementDimensionsFound();
     }
     
     public boolean bothDimensionsFound(){
@@ -202,11 +209,23 @@ public class Drone implements DroneActions {
             return true;
         }
     }
+
+    public Compass getHeading(){
+        return n.getC();
+    }
     public int getMaxX(){
         return n.getMaxX();
     }
     public int getMaxY(){
         return n.getMaxY();
+    }
+
+    public int getCurrentY(){
+        return n.getCurrentY();
+    }
+
+    public int getCurrentX(){
+        return n.getCurrentX();
     }
 
     /*
@@ -290,7 +309,7 @@ public class Drone implements DroneActions {
         if (state == 10){ //if first round, figure out which direction to fix first (y or x)
             if (heading == Compass.N || heading == Compass.S){
                 state = 11; //fix y then fix x
-            }
+            }1
             else{ //fix x then y 
                 state = 14;
             } 

@@ -1,4 +1,6 @@
-package ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
+
+import ca.mcmaster.se2aa4.island.teamXXX.Drone;
 
 public class BothGroundState implements FindDimensionState {
     
@@ -7,7 +9,7 @@ public class BothGroundState implements FindDimensionState {
     }
 
     public FindDimensionState nextState(){
-        return new GoToEdgeState();
+        return new LookForEdgeState();
     }
 
 }

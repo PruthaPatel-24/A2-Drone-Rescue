@@ -1,8 +1,10 @@
-package ca.mcmaster.se2aa4.island.teamXXX;
+package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
+
+import ca.mcmaster.se2aa4.island.teamXXX.Drone;
 
 public class BothOutOfRangeState implements FindDimensionState {
     
-    FindDimensionState nextState = new StartState();
+    FindDimensionState nextState = new StartFDState();
     public String execute(Drone d){
         //add echo left and echo right + 1 to the axis we are NOT facing 
         
@@ -15,7 +17,7 @@ public class BothOutOfRangeState implements FindDimensionState {
             nextState = new FinalDimensionFindState(); //first state of middle
         }
         else{
-            nextState = new StartState();
+            nextState = new StartFDState();
         }
         return d.turnLeft();
     }

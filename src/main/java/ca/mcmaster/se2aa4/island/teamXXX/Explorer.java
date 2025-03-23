@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import eu.ace_design.island.bot.IExplorerRaid;
+import ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates.*;
+import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.*;
+import static ca.mcmaster.se2aa4.island.teamXXX.Machine.*;
 
 public class Explorer implements IExplorerRaid {
 
@@ -21,12 +24,14 @@ public class Explorer implements IExplorerRaid {
     IslandMap map = new IslandMap();
     int range;
     Navigator n = Navigator.getInstance();
-    FindDimensionState FDState = new StartState();
-    SpiralSearch search = new SpiralSearch(drone);
 
     //variables for finding dimensions of map 
     //int state = -1;
     //int dimensionsFound = 0; 
+    private FindDimensionState FDState = new StartFDState();
+    private GoToMiddleState GTMState = new StartGTMState();
+    private Machine currentMachine = FIND_DIMENSION;
+    
 
     @Override
     public void initialize(String s) {
@@ -42,19 +47,17 @@ public class Explorer implements IExplorerRaid {
 
         drone = new Drone();
         n.setHeading(Compass.valueOf(direction));
-        search = new SpiralSearch(drone);
 
     }
 
-    //variables NEWEST
-
-
+    
     @Override
     public String takeDecision() {
         
         FDState = FDState.nextState();
         logger.info("my state is: " + FDState.getClass().getName());
         return FDState.execute(drone);
+    }
         
         /*
         JSONObject decision = new JSONObject();
@@ -95,18 +98,28 @@ public class Explorer implements IExplorerRaid {
             dimensions_found++;
             return drone.stop();
             
-            //decision.put("action", "stop");
-            //return decision.toString();
         }
-            */
+        else if (currentMachine == GO_TO_MIDDLE){
+            logger.info("in go to middle");
+            GTMState = GTMState.nextState();
+            if (GTMState == null){
+                currentMachine = currentMachine.next();
+                return null;
+            }
+            
+            else{
+                logger.info("going to execute middle");
+                return GTMState.execute(drone);
+            }
+            
+        } 
+        logger.info("now start spiral search");
+        
+        return drone.stop();
 
-        //decision.put("action", "stop");
-        //return decision.toString();
-
-        //now go to middle!! 
-        //return drone.goToMiddle();
     }
 
+    */
 
     @Override
     public void acknowledgeResults(String s) {
@@ -149,6 +162,7 @@ public class Explorer implements IExplorerRaid {
             drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
     }
+
 
     @Override
     public String deliverFinalReport() {
