@@ -70,8 +70,7 @@ public class Explorer implements IExplorerRaid {
             if (GTMState == null){
                 currentMachine = currentMachine.next();
                 return drone.scan();
-            }
-            
+            }  
             else{
                 return GTMState.execute(drone);
             }
