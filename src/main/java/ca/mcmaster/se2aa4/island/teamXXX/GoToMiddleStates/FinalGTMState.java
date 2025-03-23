@@ -7,7 +7,10 @@ import org.apache.logging.log4j.Logger;
 public class FinalGTMState implements GoToMiddleState { 
     private final Logger logger = LogManager.getLogger();
     public String execute(Drone d){
-        logger.info("my current coordinates are x: " + d.getCurrentX() + "y: " + d.getCurrentY());
+        int middleX = d.getMaxX()/2; //don't need this variable after
+        int middleY = d.getMaxY()/2; //doon't need this variabele after
+        logger.info("ccccurrent x: " + d.getCurrentX() + "middle x: " + middleX);
+        logger.info("ccccurrent y: " + d.getCurrentY() + "middle y: " + middleY);
         return d.stop();
     }
     public GoToMiddleState nextState(){
