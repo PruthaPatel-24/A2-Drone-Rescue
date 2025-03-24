@@ -56,7 +56,7 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String takeDecision() {
-        logger.info("my currnet machine: " + currentMachine);
+        logger.info("my current machine: " + currentMachine);
         if (currentMachine == FIND_DIMENSION) {
             FDState = FDState.nextState();
             if (FDState == null) {
@@ -77,7 +77,7 @@ public class Explorer implements IExplorerRaid {
 
         } else {
             SpiralState = SpiralState.nextState();
-            if (SpiralState == null) {
+            if (SpiralState == null || batteryIsLow == true) {
                 return drone.stop();
             } else {
                 return SpiralState.execute(drone);
@@ -101,9 +101,6 @@ public class Explorer implements IExplorerRaid {
         logger.info("Additional information received: {}", extraInfo);
 
         batteryIsLow = current_battery_life.reduce_battery(cost);
-        if (batteryIsLow) {
-            drone.stop();
-        }
 
         if (response.getJSONObject("extras").has("creeks") && response.getJSONObject("extras").getJSONArray("creeks").length() > 0) {
             logger.info("Creek Found!!");
