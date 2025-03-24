@@ -1,9 +1,9 @@
 /*package ca.mcmaster.se2aa4.island.teamXXX;
 
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class DroneTest {
     private Drone drone;
@@ -21,4 +21,5 @@ public class DroneTest {
         verify(mockNavigator, times(1)).move(Movement.Forward);
         assertEquals("{\"action\":\"fly\"}", result);
     }
-}*/
+}
+*/

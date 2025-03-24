@@ -79,13 +79,7 @@ public class Drone implements DroneActions {
         return stopDecision.toString();
     }
 
-    public String echo(Compass direction) { //hello pls refactor spiral search to have moement takn in instead
-        echoDecision.put("action", "echo");
-        parameters.put("direction", direction.name());
-        echoDecision.put("parameters", parameters);
-        return echoDecision.toString();
-    }
-
+    @Override
     public String echo(Movement m) {
         Compass headingToEcho = n.getC().movementToCompass(m);
         lastEcho = headingToEcho;
