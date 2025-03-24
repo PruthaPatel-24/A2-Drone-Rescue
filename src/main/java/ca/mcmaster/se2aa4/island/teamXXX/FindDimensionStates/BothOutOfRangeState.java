@@ -1,13 +1,13 @@
 package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
 
-import ca.mcmaster.se2aa4.island.teamXXX.Drone;
+import ca.mcmaster.se2aa4.island.teamXXX.RescueDrone;
 
 public class BothOutOfRangeState implements FindDimensionState {
 
     FindDimensionState nextState = new StartFDState();
 
     @Override
-    public String execute(Drone d) {
+    public String execute(RescueDrone d) {
         //add echo left and echo right + 1 to the axis we are NOT facing 
 
         d.updateRunningDimensionEchoLeft();

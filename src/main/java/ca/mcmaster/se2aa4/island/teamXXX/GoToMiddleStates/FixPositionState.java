@@ -8,7 +8,7 @@ import static ca.mcmaster.se2aa4.island.teamXXX.Compass.E;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.N;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.S;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.W;
-import ca.mcmaster.se2aa4.island.teamXXX.Drone;
+import ca.mcmaster.se2aa4.island.teamXXX.RescueDrone;
 
 public class FixPositionState implements GoToMiddleState {
 
@@ -17,7 +17,7 @@ public class FixPositionState implements GoToMiddleState {
     GoToMiddleState nextState = new FinalGTMState();
 
     @Override
-    public String execute(Drone d) {
+    public String execute(RescueDrone d) {
         logger.info("x, y: " + d.getCurrentX() + " " + d.getCurrentY());
         Compass h = d.getHeading();
         int middleX = d.getMaxX() / 2;

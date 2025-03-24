@@ -1,10 +1,7 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-interface DroneActions {
+interface BasicDroneActions {
     String fly();
-    String turnLeft();
-    String turnRight();
     String scan();
     String stop();
-    String echo(Movement m);
 }

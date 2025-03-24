@@ -1,11 +1,11 @@
 package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
 
-import ca.mcmaster.se2aa4.island.teamXXX.Drone;
+import ca.mcmaster.se2aa4.island.teamXXX.RescueDrone;
 
 public class GroundOnlyOnLeftState implements FindDimensionState {
 
     @Override
-    public String execute(Drone d) {
+    public String execute(RescueDrone d) {
         d.updateRunningDimensionEchoRight();
         //adding two increments here to account for the two spaces skipped when turning 
         d.incrementRunningDimension();

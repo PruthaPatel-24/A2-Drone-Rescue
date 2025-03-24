@@ -1,6 +1,6 @@
 package ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates;
 
-import ca.mcmaster.se2aa4.island.teamXXX.Drone;
+import ca.mcmaster.se2aa4.island.teamXXX.RescueDrone;
 import static ca.mcmaster.se2aa4.island.teamXXX.Movement.Forward;
 
 public class DecisionTrackerState implements SpiralState {
@@ -8,7 +8,7 @@ public class DecisionTrackerState implements SpiralState {
     SpiralState nextState;
 
     @Override
-    public String execute(Drone d) {
+    public String execute(RescueDrone d) {
         d.setStateTracker(d.getStateTracker() + 1);
         d.setCounter(d.getCounter() + 1);
 

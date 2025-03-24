@@ -24,7 +24,7 @@ public class Explorer implements IExplorerRaid {
 
     Battery current_battery_life;
     boolean batteryIsLow = false;
-    Drone drone;
+    RescueDrone drone;
     IslandMap map = IslandMap.getInstance();
     int range;
     Navigator n = Navigator.getInstance();
@@ -49,7 +49,7 @@ public class Explorer implements IExplorerRaid {
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 
-        drone = new Drone();
+        drone = new RescueDrone();
         n.setHeading(Compass.valueOf(direction));
 
     }
