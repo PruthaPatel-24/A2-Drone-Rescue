@@ -14,8 +14,8 @@ import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.GoToMiddleState;
 import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.StartGTMState;
 import static ca.mcmaster.se2aa4.island.teamXXX.Machine.FIND_DIMENSION;
 import static ca.mcmaster.se2aa4.island.teamXXX.Machine.GO_TO_MIDDLE;
-import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.InitializeSpiralSearch;
 import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.SpiralState;
+import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.StartSpiralSearch;
 import eu.ace_design.island.bot.IExplorerRaid;
 
 public class Explorer implements IExplorerRaid {
@@ -34,7 +34,7 @@ public class Explorer implements IExplorerRaid {
     //int dimensionsFound = 0; 
     private FindDimensionState FDState = new StartFDState();
     private GoToMiddleState GTMState = new StartGTMState();
-    private SpiralState SpiralState = new InitializeSpiralSearch();
+    private SpiralState SpiralState = new StartSpiralSearch();
     private Machine currentMachine = FIND_DIMENSION;
 
     @Override

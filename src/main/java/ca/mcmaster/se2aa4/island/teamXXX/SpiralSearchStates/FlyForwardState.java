@@ -6,7 +6,7 @@ public class FlyForwardState implements SpiralState {
 
     @Override
     public String execute(Drone d) {
-        return d.scan();
+        return d.fly();
     }
 
     @Override

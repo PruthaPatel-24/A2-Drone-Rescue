@@ -6,6 +6,7 @@ public class LeftTurningState implements SpiralState {
 
     @Override
     public String execute(Drone d) {
+        d.setStateTracker(0);
         d.setCounter(0);
         d.setStateBool(false);
         d.setSide(d.getSide() + 1);

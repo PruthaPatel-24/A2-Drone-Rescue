@@ -234,7 +234,7 @@ public class Drone implements DroneActions {
         return n.getCurrentX();
     }
 
-    boolean stateBoolean;
+    private boolean stateBoolean;
 
     public boolean setStateBool(boolean bool) {
         stateBoolean = bool;
@@ -245,11 +245,11 @@ public class Drone implements DroneActions {
         return stateBoolean;
     }
 
-    int increment;
-    int counter;
-    int cur_step;
-    int side;
-    int stateTracker;
+    private int increment;
+    private int counter;
+    private int cur_step;
+    private int side;
+    private int stateTracker;
 
     public int getSpiralSearchIncrement() {
         return increment;
@@ -297,17 +297,23 @@ public class Drone implements DroneActions {
     }
 
     public SpiralState decideState() {
-        if (getStateTracker() == 0) {
+        if (getStateTracker() == 1) {
+            logger.info("Entering echo ahead state");
             return new EchoAheadState();
-        } else if (getStateTracker() == 1) {
-            return new ScanBelowState();
         } else if (getStateTracker() == 2) {
-            return new FlyForwardState();
+            logger.info("Entering scan below state");
+            return new ScanBelowState();
         } else if (getStateTracker() == 3) {
-            return new EchoAheadAdjustmentState();
+            logger.info("Entering fly forward state");
+            return new FlyForwardState();
         } else if (getStateTracker() == 4) {
+            logger.info("Entering echo adjustment ahead state");
+            return new EchoAheadAdjustmentState();
+        } else if (getStateTracker() == 5) {
+            logger.info("Entering left turning state");
             return new LeftTurningState();
         } else {
+            logger.info("Checking if creek and site have been found");
             return new FinalSpiralSearchState();
         }
     }

@@ -13,7 +13,7 @@ public class Runner {
                     .exploring(new File(filename))
                     .withSeed(42L)
                     .startingAt(120, 150, "WEST") //start coordinates
-                    .backBefore(40000) //bot must return before 7000 battery level used
+                    .backBefore(20000) //bot must return before 7000 battery level used
                     .withCrew(5)
                     .collecting(1000, "WOOD")
                     .storingInto("./outputs") //results saves in outputs folder
