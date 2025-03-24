@@ -5,6 +5,17 @@ import java.util.Map;
 
 public class IslandMap {
 
+    private static IslandMap instance = null;
+
+    private IslandMap() {
+    }
+
+    public static IslandMap getInstance() {
+        if (instance == null) {
+            instance = new IslandMap();
+        }
+        return instance;
+    }
     int[] site_location = new int[2];
     Map<String, int[]> creek_locations = new HashMap<>();
     String site_id;

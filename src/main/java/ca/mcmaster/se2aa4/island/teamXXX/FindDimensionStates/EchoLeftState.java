@@ -1,17 +1,18 @@
 package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
-import static ca.mcmaster.se2aa4.island.teamXXX.Movement.*;
 
 import ca.mcmaster.se2aa4.island.teamXXX.Drone;
+import static ca.mcmaster.se2aa4.island.teamXXX.Movement.Left;
 
 public class EchoLeftState implements FindDimensionState {
-    
-    public String execute(Drone d){
+
+    @Override
+    public String execute(Drone d) {
         return d.echo(Left);
     }
 
-    public FindDimensionState nextState(){
+    @Override
+    public FindDimensionState nextState() {
         return new EchoRightState();
     }
 
 }
-

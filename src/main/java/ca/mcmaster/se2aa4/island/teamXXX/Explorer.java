@@ -8,22 +8,24 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import eu.ace_design.island.bot.IExplorerRaid;
-import ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates.*;
-import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.*;
+import ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates.FindDimensionState;
+import ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates.StartFDState;
+import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.GoToMiddleState;
+import ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates.StartGTMState;
+import static ca.mcmaster.se2aa4.island.teamXXX.Machine.FIND_DIMENSION;
+import static ca.mcmaster.se2aa4.island.teamXXX.Machine.GO_TO_MIDDLE;
 import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.SpiralState;
-import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.StartSpiralState;
-
-import static ca.mcmaster.se2aa4.island.teamXXX.Machine.*;
+import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.StartSpiralSearch;
+import eu.ace_design.island.bot.IExplorerRaid;
 
 public class Explorer implements IExplorerRaid {
 
     private final Logger logger = LogManager.getLogger();
-    
+
     Battery current_battery_life;
     boolean batteryIsLow = false;
     Drone drone;
-    IslandMap map = new IslandMap();
+    IslandMap map = IslandMap.getInstance();
     int range;
     Navigator n = Navigator.getInstance();
 
@@ -32,8 +34,8 @@ public class Explorer implements IExplorerRaid {
     //int dimensionsFound = 0; 
     private FindDimensionState FDState = new StartFDState();
     private GoToMiddleState GTMState = new StartGTMState();
-    private SpiralState SpiralState = new StartSpiralState();
-    private Machine currentMachine = FIND_DIMENSION;    
+    private SpiralState SpiralState = new StartSpiralSearch();
+    private Machine currentMachine = FIND_DIMENSION;
 
     @Override
     public void initialize(String s) {
@@ -52,40 +54,35 @@ public class Explorer implements IExplorerRaid {
 
     }
 
-    
     @Override
     public String takeDecision() {
-        logger.info("my currnet machine: " + currentMachine);
-        if (currentMachine == FIND_DIMENSION){
+        logger.info("my current machine: " + currentMachine);
+        if (currentMachine == FIND_DIMENSION) {
             FDState = FDState.nextState();
-            if (FDState == null){
+            if (FDState == null) {
                 currentMachine = currentMachine.next();
                 return drone.scan();
+            } else {
+                return FDState.execute(drone);
             }
-            else return FDState.execute(drone);
-            
-        }
-        else if (currentMachine == GO_TO_MIDDLE){
+
+        } else if (currentMachine == GO_TO_MIDDLE) {
             GTMState = GTMState.nextState();
-            if (GTMState == null){
+            if (GTMState == null) {
                 currentMachine = currentMachine.next();
                 return drone.scan();
-            }  
-            else{
+            } else {
                 return GTMState.execute(drone);
             }
-            
-        } 
-        else{
+
+        } else {
             SpiralState = SpiralState.nextState();
-            if (SpiralState == null){
+            if (SpiralState == null || batteryIsLow == true) {
                 return drone.stop();
-            }
-            
-            else{
+            } else {
                 return SpiralState.execute(drone);
             }
-        }        
+        }
 
     }
 
@@ -104,9 +101,6 @@ public class Explorer implements IExplorerRaid {
         logger.info("Additional information received: {}", extraInfo);
 
         batteryIsLow = current_battery_life.reduce_battery(cost);
-        if (batteryIsLow) {
-            drone.stop();
-        }
 
         if (response.getJSONObject("extras").has("creeks") && response.getJSONObject("extras").getJSONArray("creeks").length() > 0) {
             logger.info("Creek Found!!");
@@ -130,7 +124,6 @@ public class Explorer implements IExplorerRaid {
             drone.updateEchoData(range, Terrain.valueOf(foundValue));
         }
     }
-
 
     @Override
     public String deliverFinalReport() {

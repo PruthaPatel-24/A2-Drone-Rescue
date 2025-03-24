@@ -8,7 +8,7 @@ public class FinalReport {
         this.map = m;
     }
 
-    public String finalReport() {;
+    public String finalReport() {
         return map.closestCreek();
     }
 }

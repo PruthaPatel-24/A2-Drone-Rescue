@@ -1,9 +1,9 @@
-package ca.mcmaster.se2aa4.island.teamXXX.FindDimensionStates;
+package ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates;
 
 import ca.mcmaster.se2aa4.island.teamXXX.Drone;
 import static ca.mcmaster.se2aa4.island.teamXXX.Movement.Forward;
 
-public class EchoForwardState implements FindDimensionState {
+public class EchoAheadState implements SpiralState {
 
     @Override
     public String execute(Drone d) {
@@ -11,8 +11,7 @@ public class EchoForwardState implements FindDimensionState {
     }
 
     @Override
-    public FindDimensionState nextState() {
-        return new IncrementForwardState();
+    public SpiralState nextState() {
+        return new DecisionTrackerState();
     }
-
 }
