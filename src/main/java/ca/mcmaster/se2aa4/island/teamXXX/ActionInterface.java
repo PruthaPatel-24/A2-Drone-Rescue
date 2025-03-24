@@ -6,5 +6,5 @@ interface DroneActions {
     String turnRight();
     String scan();
     String stop();
-    String echo(Compass heading);
+    String echo(Movement m);
 }
