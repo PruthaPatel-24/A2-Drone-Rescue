@@ -30,9 +30,9 @@ public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, Can
     JSONObject echoDecision = new JSONObject();
     JSONObject headingDecision = new JSONObject();
     JSONObject parameters = new JSONObject();
-    private EchoData echoDataLeft = new EchoData();
-    private EchoData echoDataRight = new EchoData();
-    private EchoData echoDataForward = new EchoData();
+    protected EchoData echoDataLeft = new EchoData();
+    protected EchoData echoDataRight = new EchoData();
+    protected EchoData echoDataForward = new EchoData();
     private Compass lastEcho;
 
     @Override
