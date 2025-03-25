@@ -8,6 +8,8 @@ public class Navigator {
     private int maxY; 
     private Compass currentHeading = Compass.N; //direction drone is facing
     private static Navigator instance = null;
+    private int dimensionsFound = 0; 
+    private int runningDimension = 0;
 
     private Navigator (){
     }
@@ -27,9 +29,6 @@ public class Navigator {
         currentHeading = starting_direction;
 
     }
-    //NEWWWWWW INTEGERS!! 
-    int dimensionsFound = 0; 
-    int runningDimension = 0;
 
     public void incrementDimensionsFound (){
         this.dimensionsFound++;
@@ -62,7 +61,6 @@ public class Navigator {
         runningDimension = 0;
     }
 
-    /////////////////////////////
     public void setX(int i){
         x = i;
     }

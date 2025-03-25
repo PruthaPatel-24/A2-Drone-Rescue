@@ -60,7 +60,7 @@ public class IslandMap {
         return "The closest creek to the emergency site is " + creek_id + " --> x: " + x_creek + " y: " + y_creek;
     }
 
-    public Map getFoundCreeks() {
+    public Map<String, int[]> getFoundCreeks() {
         return creek_locations;
     }
 
