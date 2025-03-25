@@ -6,7 +6,7 @@ public class FinalDimensionFindState implements FindDimensionState {
 
     @Override
     public String execute(RescueDrone d) {
-        return d.scan();
+        return null;
     }
 
     @Override

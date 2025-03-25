@@ -14,7 +14,7 @@ public class IncrementForwardState implements FindDimensionState {
             return d.fly();
         } else {
             nextState = new IncrementForwardDoneState();
-            return d.scan();
+            return null;
 
         }
     }
