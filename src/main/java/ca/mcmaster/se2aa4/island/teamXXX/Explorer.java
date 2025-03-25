@@ -2,6 +2,8 @@ package ca.mcmaster.se2aa4.island.teamXXX;
 
 import java.io.StringReader;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -17,6 +19,8 @@ import ca.mcmaster.se2aa4.island.teamXXX.SpiralSearchStates.StartSpiralSearch;
 import eu.ace_design.island.bot.IExplorerRaid;
 
 public class Explorer implements IExplorerRaid {
+
+    private final Logger logger = LogManager.getLogger();
 
     Battery current_battery_life;
     boolean batteryIsLow = false;
@@ -112,6 +116,7 @@ public class Explorer implements IExplorerRaid {
     public String deliverFinalReport() {
         FinalReport report = new FinalReport(map);
         String reportClosestCreek = report.finalReport();
+        logger.info("Generated final report: {}", reportClosestCreek);
         return reportClosestCreek;
     }
 
