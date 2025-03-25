@@ -1,8 +1,5 @@
 package ca.mcmaster.se2aa4.island.teamXXX.GoToMiddleStates;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import ca.mcmaster.se2aa4.island.teamXXX.Compass;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.E;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.N;
@@ -11,23 +8,16 @@ import static ca.mcmaster.se2aa4.island.teamXXX.Compass.W;
 import ca.mcmaster.se2aa4.island.teamXXX.RescueDrone;
 
 public class FixPositionState implements GoToMiddleState {
-
-    private final Logger logger = LogManager.getLogger();
-
     GoToMiddleState nextState = new FinalGTMState();
 
     @Override
     public String execute(RescueDrone d) {
-        logger.info("x, y: " + d.getCurrentX() + " " + d.getCurrentY());
         Compass h = d.getHeading();
         int middleX = d.getMaxX() / 2;
         int middleY = d.getMaxY() / 2;
         if (Math.abs(d.getCurrentX() - middleX) <= 2 && Math.abs(d.getCurrentY() - middleY) <= 2) {
-            logger.info("current x: " + d.getCurrentX() + "middle x: " + middleX);
-            logger.info("current y: " + d.getCurrentY() + "middle y: " + middleY);
             nextState = new FinalGTMState();
         } else {
-            logger.info("into here");
             nextState = new FixPositionState();
         }
         if (h == N && middleY < d.getCurrentY()

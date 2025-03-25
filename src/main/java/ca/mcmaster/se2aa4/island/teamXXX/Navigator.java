@@ -1,16 +1,12 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.*;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 public class Navigator {
     private int x = -1; 
     private int y = -1;
     private int maxX;
     private int maxY; 
     private Compass currentHeading = Compass.N; //direction drone is facing
-    private final Logger logger = LogManager.getLogger();
     private static Navigator instance = null;
 
     private Navigator (){
@@ -28,7 +24,6 @@ public class Navigator {
     }
 
     public void setDirection(Compass starting_direction) {
-        logger.info("set current direction: " + currentHeading +  " to start direction: " + starting_direction);
         currentHeading = starting_direction;
 
     }
@@ -107,12 +102,10 @@ public class Navigator {
     }
 
     public int getCurrentX() {
-        logger.info("Current x: " + x);
         return x;
     }
 
     public int getCurrentY() {
-        logger.info("Current y: " + y);
         return y;
     }
 

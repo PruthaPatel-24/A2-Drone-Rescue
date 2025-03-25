@@ -1,7 +1,5 @@
 package ca.mcmaster.se2aa4.island.teamXXX;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import static ca.mcmaster.se2aa4.island.teamXXX.Compass.E;
@@ -24,9 +22,6 @@ import static ca.mcmaster.se2aa4.island.teamXXX.Terrain.GROUND;
 import static ca.mcmaster.se2aa4.island.teamXXX.Terrain.OUT_OF_RANGE;
 
 public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, CanEcho {
-
-    //private Compass heading;
-    private final Logger logger = LogManager.getLogger();
     JSONObject echoDecision = new JSONObject();
     JSONObject headingDecision = new JSONObject();
     JSONObject parameters = new JSONObject();
@@ -38,7 +33,6 @@ public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, Can
     @Override
     public String turnLeft() {
         n.move(Movement.Left);
-        //heading = heading.previous();
         headingDecision.put("action", "heading");
         parameters.put("direction", n.getC().name());
         headingDecision.put("parameters", parameters);
@@ -48,7 +42,6 @@ public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, Can
     @Override
     public String turnRight() {
         n.move(Movement.Right);
-        //heading = heading.next();
         headingDecision.put("action", "heading");
         parameters.put("direction", n.getC().name());
         headingDecision.put("parameters", parameters);
@@ -59,7 +52,6 @@ public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, Can
     public String echo(Movement m) {
         Compass headingToEcho = n.getC().movementToCompass(m);
         lastEcho = headingToEcho;
-        logger.info("echo gave back: " + headingToEcho);
         echoDecision.put("action", "echo");
         parameters.put("direction", headingToEcho.name());
         echoDecision.put("parameters", parameters);
@@ -68,22 +60,18 @@ public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, Can
 
     public void updateRunningDimensionEchoLeft() {
         n.updateRunningDimension(echoDataLeft.range);
-        logger.info("running dimension is " + n.getRunningDimension());
     }
 
     public void updateRunningDimensionEchoRight() {
         n.updateRunningDimension(echoDataRight.range);
-        logger.info("running dimension is " + n.getRunningDimension());
     }
 
     public void updateRunningDimensionEchoForward() {
         n.updateRunningDimension(echoDataForward.range);
-        logger.info("running dimension is " + n.getRunningDimension());
     }
 
     public void incrementRunningDimension() {
         n.updateRunningDimension(1);
-        logger.info("running dimension is " + n.getRunningDimension());
     }
 
     public void updateDimension(boolean mainAxis) {
@@ -130,20 +118,16 @@ public class RescueDrone extends Drone implements CanTurnRight, CanTurnLeft, Can
 
     public void updateEchoData(int range, Terrain landDetected) {
         Movement wing = n.getC().compassToMovement(lastEcho);
-        logger.info("upating echo data");
         if (wing == Movement.Left) {
-            logger.info("left wing");
             echoDataLeft.setRange(range);
             echoDataLeft.setLandDetected(landDetected);
         } else if (wing == Movement.Right) {
-            logger.info("right wing");
             echoDataRight.setRange(range);
             echoDataRight.setLandDetected(landDetected);
         } else if (wing == Movement.Forward) {
             echoDataForward.setRange(range);
             echoDataForward.setLandDetected(landDetected);
         }
-        logger.info("acknowedged results");
     }
 
     public FindDimensionState compareEchoData() {
