@@ -6,7 +6,7 @@ public class StartFDState implements FindDimensionState {
 
     @Override
     public String execute(RescueDrone d) {
-        return d.scan();
+        return null;
     }
 
     @Override

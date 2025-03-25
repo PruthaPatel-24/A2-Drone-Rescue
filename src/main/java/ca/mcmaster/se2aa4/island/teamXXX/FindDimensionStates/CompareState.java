@@ -9,7 +9,7 @@ public class CompareState implements FindDimensionState {
     @Override
     public String execute(RescueDrone d) {
         this.compareResults = d.compareEchoData();
-        return d.scan();
+        return null;
     }
 
     @Override

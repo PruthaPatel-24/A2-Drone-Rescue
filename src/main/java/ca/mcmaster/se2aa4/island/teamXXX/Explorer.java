@@ -51,13 +51,17 @@ public class Explorer implements IExplorerRaid {
     @Override
     public String takeDecision() {
         if (currentMachine == FIND_DIMENSION) {
-            FDState = FDState.nextState();
-            if (FDState == null) {
-                currentMachine = currentMachine.next();
-                return drone.scan();
-            } else {
-                return FDState.execute(drone);
+            String execution = null;
+            while (execution == null){
+                FDState = FDState.nextState();
+                if (FDState == null) {
+                    currentMachine = currentMachine.next();
+                    return drone.scan();
+                } else {
+                    execution = FDState.execute(drone);
+                }
             }
+            return execution;
 
         } else if (currentMachine == GO_TO_MIDDLE) {
             GTMState = GTMState.nextState();
@@ -84,9 +88,6 @@ public class Explorer implements IExplorerRaid {
         JSONObject response = new JSONObject(new JSONTokener(new StringReader(s)));
 
         Integer cost = response.getInt("cost");
-        // ("The cost of the action was {}", cost);
-
-        String status = response.getString("status");
 
         JSONObject extraInfo = response.getJSONObject("extras");
 

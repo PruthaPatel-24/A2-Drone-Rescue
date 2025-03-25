@@ -14,7 +14,7 @@ public class GoToEdgeState implements FindDimensionState {
 
         } else {
             nextState = new UTurnPartOneState();
-            return d.scan();
+            return null;
         }
 
     }
