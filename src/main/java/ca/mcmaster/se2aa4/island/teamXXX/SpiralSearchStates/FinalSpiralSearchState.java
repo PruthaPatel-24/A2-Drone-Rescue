@@ -17,7 +17,7 @@ public class FinalSpiralSearchState implements SpiralState {
         } else {
             nextState = new DecisionTrackerState();
         }
-        return d.echo(Forward);
+        return null;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class InitializeSpiralSearch implements SpiralState {
         d.setCounter(0);
         d.setSide(1);
         d.setStateBool(false);
-        return d.echo(Forward);
+        return null;
     }
 
     @Override

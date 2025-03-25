@@ -64,21 +64,29 @@ public class Explorer implements IExplorerRaid {
             return execution;
 
         } else if (currentMachine == GO_TO_MIDDLE) {
-            GTMState = GTMState.nextState();
-            if (GTMState == null) {
-                currentMachine = currentMachine.next();
-                return drone.scan();
-            } else {
-                return GTMState.execute(drone);
+            String execution = null;
+            while (execution == null){
+                GTMState = GTMState.nextState();
+                if (GTMState == null) {
+                    currentMachine = currentMachine.next();
+                    return drone.scan();
+                } else {
+                    execution = GTMState.execute(drone);
+                }
             }
+            return execution;
 
         } else {
-            SpiralState = SpiralState.nextState();
-            if (SpiralState == null || batteryIsLow == true) {
-                return drone.stop();
-            } else {
-                return SpiralState.execute(drone);
+            String execution = null;
+            while (execution == null){
+                SpiralState = SpiralState.nextState();
+                if (SpiralState == null || batteryIsLow == true) {
+                    return drone.stop();
+                } else {
+                    execution = SpiralState.execute(drone);
+                }
             }
+            return execution; 
         }
 
     }
