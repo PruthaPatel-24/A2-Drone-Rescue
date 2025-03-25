@@ -6,6 +6,7 @@ public class LeftTurningState implements SpiralState {
 
     @Override
     public String execute(RescueDrone d) {
+        //Helps increment the length of the drone flight path and resets tracker variables to redo spiral search
         d.setStateTracker(0);
         d.setCounter(0);
         d.setStateBool(false);
